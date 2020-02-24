@@ -16,4 +16,9 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Assignments\" />
+    <Folder Include="Database\" />
+  </ItemGroup>
+
 </Project>
