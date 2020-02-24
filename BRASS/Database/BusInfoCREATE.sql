@@ -1,5 +1,5 @@
 CREATE TABLE BusInfo (
-	BusId int NOT NULL PRIMARY KEY,
+	BusId uniqueidentifier NOT NULL PRIMARY KEY,
 	BusNumb int NOT NULL,
 	Capacity int NOT NULL,
 	DriverId int,

@@ -1,5 +1,5 @@
 CREATE TABLE StudentInfo (
-    StudentId int NOT NULL PRIMARY KEY,
+    StudentId uniqueidentifier NOT NULL PRIMARY KEY,
     FirstName varchar(255) NOT NULL,
     LastName varchar(255) NOT NULL,
 	ParentFName varchar(255) NOT NULL,

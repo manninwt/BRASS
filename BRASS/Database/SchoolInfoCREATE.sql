@@ -1,5 +1,5 @@
 CREATE TABLE SchoolInfo (
-	SchoolId int NOT NULL PRIMARY KEY,
+	SchoolId uniqueidentifier NOT NULL PRIMARY KEY,
 	SchoolAddress varchar(255) NOT NULL,
 	GeocodedAddress varchar(255) NOT NULL,
 	NumbBuses int NOT NULL,

@@ -1,1 +1,0 @@
-INSERT INTO StudentInfo Values(1, 'Timon', 'Mannings', 'Wade', 'Mannings', 9374417777, '9353 COUNTY ROAD 101', 'Belle Center', 43310);
