@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewData["Title"] = "Students";
+}
+
+<h2>Students</h2>
+
+@using (Html.BeginForm("AddStudent", "Home", FormMethod.Post))
+{
+<table>
+    <tr>
+        <th scope="row">Student First Name: </th>
+    </tr>
+    <tr>
+        <td>@Html.TextBox("studentFirstName")</td>
+    </tr>
+    <tr>
+        <th scope="row">Student Last Name:</th>
+    </tr>
+    <tr>
+        <td>@Html.TextBox("studentLastName")</td>
+    </tr>
+    <tr>
+        <th scope="row">Parent First Name:</th>
+    </tr>
+    <tr>
+        <td>@Html.TextBox("parentFirstName")</td>
+    </tr>
+    <tr>
+        <th scope="row">Parent Last Name:</th>
+    </tr>
+    <tr>
+        <td>@Html.TextBox("parentLastName")</td>
+    </tr>
+    <tr>
+        <th scope="row">Parent Phone Number:</th>
+    </tr>
+    <tr>
+        <td>@Html.TextBox("parentPhoneNumber")</td>
+    </tr>
+    <tr>
+        <th scope="row">Street Address:</th>
+    </tr>
+    <tr>
+        <td>@Html.TextBox("studentStreetAddress")</td>
+    </tr>
+    <tr>
+        <th scope="row">City:</th>
+    </tr>
+    <tr>
+        <td>@Html.TextBox("city")</td>
+    </tr>
+    <tr>
+        <th scope="row">ZipCode:</th>
+    </tr>
+    <tr>
+        <td>@Html.TextBox("zipCode")</td>
+    </tr>
+    <tr>
+        <td colspan="2"><input type="submit" value="Add Student"></td>
+    </tr>
+</table>
+}
