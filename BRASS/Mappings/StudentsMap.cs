@@ -4,7 +4,7 @@ using BRASS.Models;
 
 namespace BRASS.Mappings
 {
-    public class StudentsMap : ClassMap<Students>
+    public class StudentsMap : ClassMap<Student>
     {
         public StudentsMap()
         {
