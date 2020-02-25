@@ -1,0 +1,188 @@
+﻿
+@{
+    ViewData["Title"] = "Student";
+}
+@model Student
+
+<link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css" />
+<script type="text/javascript" src="DataTables/datatables.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+
+<div class="row col-lg-12" style="margin-top:3%">
+    <div class="col-lg-8">
+        <div class="col-lg-12">
+            <div class="form-group col-lg-12">
+                <select class="custom-select">
+                    <option selected="">Select Students</option>
+                    <option value="1">All Students</option>
+                    <option value="2">Route 3</option>
+                    <option value="3">Route 15</option>
+                </select>
+            </div>
+            <div class="col-lg-12" style="overflow-y:auto;overflow-x:visible;max-height:70vh">
+                <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="ContentPlaceHolder">
+                    <table width="100%" align="center" cellpadding="2" cellspacing="2" border="0" bgcolor="#EAEAEA">
+                        <tr align="left" style="background-color:#004080;color:White;">
+                            <td> ID </td>
+                            <td> Name </td>
+                            <td>Pass</td>
+                        </tr>
+
+                        <%=getWhileLoopData()%>
+
+                    </table>
+                </asp:Content>
+                @*<table class="table table-hover">
+                                 <thead>
+                                     <tr class="table-primary">
+                         <th scope="col">Student First Name</th>
+                         <th scope="col">Student Last Name</th>
+                         <th scope="col">Parent First Name</th>
+                         <th scope="col">Student Address</th>
+                     </tr>
+                    <tr class="table-light">
+                         <th scope="row">Timon</th>
+                         <td>Mannings</td>
+                         <td>Wade</td>
+                         <td>9353 COUNTY ROAD 101</td>
+                     </tr>
+                     <tr class="table-dark">
+                         <th scope="row">Bryan</th>
+                         <td>Huddleston</td>
+                         <td>Scott</td>
+                         <td>WhitePeopleVille ST</td>
+                     </tr>
+                     <tr class="table-light">
+                         <th scope="row">Nathan</th>
+                         <td>Boehringer</td>
+                         <td>Sam</td>
+                         <td>Far From Campus</td>
+                     </tr>
+                     <tr class="table-dark">
+                         <th scope="row">Braden</th>
+                         <td>Lance</td>
+                         <td>Bryan</td>
+                         <td>WhitePeopleVille ST</td>
+                     </tr>*@
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="form-group col-lg-12">
+            <select class="custom-select" id="addUpdateDropdown">
+                <option selected="">Select Students</option>
+                <option value="1">Add Student</option>
+                <option value="2">Update Student</option>
+            </select>
+        </div>
+        @using (Html.BeginForm("AddStudent", "Home", FormMethod.Post))
+        {
+            <div class="col-lg-12" id="AddStudent" style="display:none">
+                <h2>Add Student</h2>
+                <div class="row">
+                    <div class="col-lg-8"><label>Student First Name: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("studentFirstName")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8"><label>Student Last Name: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("studentLastName")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8"><label>Parent First Name: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("parentFirstName")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8"><label>Parent Last Name: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("parentLastName")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8"><label>Parent Phone Number: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("parentPhoneNumber")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8"><label>Student First Name: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("studentStreetAddress")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8"><label>City: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("city")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8"><label>ZipCode: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("zipCode")</div>
+                </div>
+                <div class="row"><input type="submit" value="Add Student"></div>
+            </div>
+        }
+
+        @using (Html.BeginForm("AddStudent", "Home", FormMethod.Post))
+        {
+            <div class="col-lg-12" id="UpdateStudent" style="display:none">
+                <h2>Update Student</h2>
+                <div class="row">
+                    <div class="col-lg-8"><label>Student First Name: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("studentFirstName")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8"><label>Student Last Name: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("studentLastName")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8"><label>Parent First Name: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("parentFirstName")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8"><label>Parent Last Name: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("parentLastName")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8"><label>Parent Phone Number: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("parentPhoneNumber")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8"><label>Student First Name: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("studentStreetAddress")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8"><label>City: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("city")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8"><label>ZipCode: </label></div>
+                    <div class="col-lg-4">@Html.TextBox("zipCode")</div>
+                </div>
+                <div class="row"><input type="submit" value="Update Student"></div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    $('#addUpdateDropdown').change(function () {
+        console.log($('#addUpdateDropdown').val())
+        if ($('#addUpdateDropdown').val() == 1) {
+            document.getElementById('UpdateStudent').style.display = 'none';
+            document.getElementById('AddStudent').style.display = 'block';
+        }
+        else if ($('#addUpdateDropdown').val() == 2) {
+            document.getElementById('UpdateStudent').style.display = 'block';
+            document.getElementById('AddStudent').style.display = 'none';
+        }
+        else {
+            document.getElementById('UpdateStudent').style.display = 'none';
+            document.getElementById('AddStudent').style.display = 'none';
+        }
+    });
+</script>
+
+<style>
+    .container {
+        max-width: 84vw
+    }
+
+    #AddStudent #UpdateStudent {
+        margin: 0% 10%
+    }
+</style>

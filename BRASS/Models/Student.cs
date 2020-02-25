@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BRASS.Models
 {
-    public class Students
+    public class Student
     {
         public virtual Guid StudentId
         {

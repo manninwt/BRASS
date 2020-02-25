@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BRASS.Models;
 using BRASS.Services;
+using System.Data;
 
 namespace BRASS.Controllers
 {
@@ -16,7 +17,7 @@ namespace BRASS.Controllers
             return View();
         }
 
-        public IActionResult Students()
+        public IActionResult Student()
         {
             return View();
         }
