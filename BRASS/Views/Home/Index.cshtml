@@ -2,12 +2,17 @@
     ViewData["Title"] = "Home Page";
 }
 
-@*<link rel="stylesheet" href="https://js.arcgis.com/4.14/esri/themes/light/main.css">*@
+<!--<link rel="stylesheet" href="https://esri.github.io/calcite-maps/dist/css/calcite-maps-bootstrap.min-v0.8.css">-->
+<!-- Calcite Maps -->
+<link rel="stylesheet" href="https://esri.github.io/calcite-maps/dist/css/calcite-maps-arcgis-4.x.min-v0.8.css">
+<!-- ArcGIS JS 4 -->
+<link rel="stylesheet" href="https://js.arcgis.com/4.13/esri/css/main.css">
 <script src="https://js.arcgis.com/4.14/"></script>
 
+<div clas="container">
 <div class="row" style="min-height:80vh">
-    <div class="col-lg-6" id="viewDiv" style="margin-bottom:auto;margin-top:auto;border:medium">
-        <h1>MAP GOES HERE</h1>
+    <div class="col-lg-6" id="viewDiv" style="border:medium;position:relative;height: 90vh;width: 80vw;margin: 0;padding: 0">
+        
     </div>
     <div class="col-lg-6">
         <div class="form-group" style="max-width:20vw">
@@ -20,12 +25,13 @@
                 <option>BUS 25</option>
             </select>
         </div>
-        <div>
+        <div class="col-lg-6">
             <h2>BUS INFO:</h2>
             <h3>ROUTE NUMBER: <p>11</p></h3>
 
         </div>
     </div>
+</div>
 </div>
 
 <script>
