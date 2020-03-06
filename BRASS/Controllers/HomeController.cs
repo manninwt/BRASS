@@ -17,11 +17,6 @@ namespace BRASS.Controllers
             return View();
         }
 
-        public IActionResult Student()
-        {
-            return View();
-        }
-
         public IActionResult Drivers()
         {
             return View();

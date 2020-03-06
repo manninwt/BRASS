@@ -4,12 +4,14 @@
 }
 @model Student
 
-<link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css" />
-<script type="text/javascript" src="DataTables/datatables.min.js"></script>
 <script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-<div class="row col-lg-12" style="margin-top:3%">
-    <div class="col-lg-8">
+<div class="row col-lg-12" style="margin-top:1%">
+    <div class="col-lg-12">
+        <!--REPLACE WITH col-lg-8 DONE FOR PRESENTATION-->
         <div class="col-lg-12">
             <div class="form-group col-lg-12">
                 <select class="custom-select">
@@ -20,142 +22,172 @@
                 </select>
             </div>
             <div class="col-lg-12" style="overflow-y:auto;overflow-x:visible;max-height:70vh">
-                <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="ContentPlaceHolder">
-                    <table width="100%" align="center" cellpadding="2" cellspacing="2" border="0" bgcolor="#EAEAEA">
-                        <tr align="left" style="background-color:#004080;color:White;">
-                            <td> ID </td>
-                            <td> Name </td>
-                            <td>Pass</td>
-                        </tr>
-
-                        <%=getWhileLoopData()%>
-
+                @if (ViewBag != null)
+                {
+                    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.students");
+            };
+                    </script>
+                }
+                    <table class="table table-hover">
+                        <thead>
+                            <tr class="table-primary">
+                                <th scope="col">First Name</th>
+                                <th scope="col">Last Name</th>
+                                <th scope="col">Parent First Name</th>
+                                <th scope="col">Parent Phone</th>
+                                <th scope="col">Address</th>
+                                <th scope="col">City</th>
+                                <th scope="col">ZipCode</th>
+                                <th scope="col">Assigned Route</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        @foreach (var student in ViewBag.students)
+                        {
+                            <tr>
+                                <td>@student.FirstName</td>
+                                <td>@student.LastName</td>
+                                <td>@student.ParentFName</td>
+                                <td>@student.ParentLName</td>
+                                <td>@student.ParentPhoneNumber</td>
+                                <td>@student.StudentStreetAddress</td>
+                                <td>@student.City</td>
+                                <td>@student.ZipCode</td>
+                                <td> <a style="text-decoration: underline;" data-toggle="modal" data-target="#UpdateStudentModal">Edit</a></td>
+                            </tr>
+                        }
                     </table>
-                </asp:Content>
-                @*<table class="table table-hover">
-                                 <thead>
-                                     <tr class="table-primary">
-                         <th scope="col">Student First Name</th>
-                         <th scope="col">Student Last Name</th>
-                         <th scope="col">Parent First Name</th>
-                         <th scope="col">Student Address</th>
-                     </tr>
-                    <tr class="table-light">
-                         <th scope="row">Timon</th>
-                         <td>Mannings</td>
-                         <td>Wade</td>
-                         <td>9353 COUNTY ROAD 101</td>
-                     </tr>
-                     <tr class="table-dark">
-                         <th scope="row">Bryan</th>
-                         <td>Huddleston</td>
-                         <td>Scott</td>
-                         <td>WhitePeopleVille ST</td>
-                     </tr>
-                     <tr class="table-light">
-                         <th scope="row">Nathan</th>
-                         <td>Boehringer</td>
-                         <td>Sam</td>
-                         <td>Far From Campus</td>
-                     </tr>
-                     <tr class="table-dark">
-                         <th scope="row">Braden</th>
-                         <td>Lance</td>
-                         <td>Bryan</td>
-                         <td>WhitePeopleVille ST</td>
-                     </tr>*@
-                </tbody>
-                </table>
             </div>
         </div>
     </div>
-    <div class="col-lg-4">
-        <div class="form-group col-lg-12">
-            <select class="custom-select" id="addUpdateDropdown">
-                <option selected="">Select Students</option>
-                <option value="1">Add Student</option>
-                <option value="2">Update Student</option>
-            </select>
-        </div>
-        @using (Html.BeginForm("AddStudent", "Home", FormMethod.Post))
-        {
-            <div class="col-lg-12" id="AddStudent" style="display:none">
-                <h2>Add Student</h2>
-                <div class="row">
-                    <div class="col-lg-8"><label>Student First Name: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("studentFirstName")</div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-8"><label>Student Last Name: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("studentLastName")</div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-8"><label>Parent First Name: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("parentFirstName")</div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-8"><label>Parent Last Name: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("parentLastName")</div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-8"><label>Parent Phone Number: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("parentPhoneNumber")</div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-8"><label>Student First Name: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("studentStreetAddress")</div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-8"><label>City: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("city")</div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-8"><label>ZipCode: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("zipCode")</div>
-                </div>
-                <div class="row"><input type="submit" value="Add Student"></div>
-            </div>
-        }
 
-        @using (Html.BeginForm("AddStudent", "Home", FormMethod.Post))
-        {
-            <div class="col-lg-12" id="UpdateStudent" style="display:none">
-                <h2>Update Student</h2>
-                <div class="row">
-                    <div class="col-lg-8"><label>Student First Name: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("studentFirstName")</div>
+    <div class="modal fade" id="UpdateStudentModule" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Update Student</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                <div class="row">
-                    <div class="col-lg-8"><label>Student Last Name: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("studentLastName")</div>
+                <div class="modal-body">
+                    @using (Html.BeginForm("AddStudent", "Home", FormMethod.Post))
+                    {
+                        <div class="col-lg-12" id="AddStudent">
+                            <h2>Add Student</h2>
+                            <div class="row">
+                                <div class="col-lg-6"><label>Student First Name: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("studentFirstName")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6"><label>Student Last Name: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("studentLastName")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6"><label>Parent First Name: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("parentFirstName")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6"><label>Parent Last Name: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("parentLastName")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6"><label>Parent Phone Number: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("parentPhoneNumber")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6"><label>Student First Name: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("studentStreetAddress")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6"><label>City: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("city")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6"><label>ZipCode: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("zipCode")</div>
+                            </div>
+
+                        </div>
+                    }
                 </div>
-                <div class="row">
-                    <div class="col-lg-8"><label>Parent First Name: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("parentFirstName")</div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <input class="btn btn-primary" type="submit" data-dismiss="modal" value="Add Student">
+                    </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-8"><label>Parent Last Name: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("parentLastName")</div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-8"><label>Parent Phone Number: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("parentPhoneNumber")</div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-8"><label>Student First Name: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("studentStreetAddress")</div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-8"><label>City: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("city")</div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-8"><label>ZipCode: </label></div>
-                    <div class="col-lg-4">@Html.TextBox("zipCode")</div>
-                </div>
-                <div class="row"><input type="submit" value="Update Student"></div>
             </div>
-        }
+        </div>
+    </div>
+
+    <div class="modal fade" id="AddStudentModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Student</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    @using (Html.BeginForm("AddStudent", "Home", FormMethod.Post))
+                    {
+                        <div class="col-lg-12" id="AddStudent">
+                            <h2>Add Student</h2>
+                            <div class="row">
+                                <div class="col-lg-6"><label>Student First Name: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("studentFirstName")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6"><label>Student Last Name: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("studentLastName")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6"><label>Parent First Name: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("parentFirstName")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6"><label>Parent Last Name: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("parentLastName")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6"><label>Parent Phone Number: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("parentPhoneNumber")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6"><label>Student First Name: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("studentStreetAddress")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6"><label>City: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("city")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6"><label>ZipCode: </label></div>
+                                <div class="col-lg-6">@Html.TextBox("zipCode")</div>
+                            </div>
+                            
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <input class="btn btn-primary" type="submit" data-dismiss="modal" value="Add Student">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id='myModal' class='modal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='myModalContent'></div>
+        </div>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-lg-12" style="display:flex;justify-content:center;margin:0.5rem 0rem">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#AddStudentModal">Add Student</button>
     </div>
 </div>
 
@@ -175,14 +207,57 @@
             document.getElementById('AddStudent').style.display = 'none';
         }
     });
+
+    var TeamDetailPostBackURL = '/Home/Student';
+    $(function () {
+        $(".anchorDetail").click(function () {
+            debugger;
+            var $buttonClicked = $(this);
+            var id = $buttonClicked.attr('data-id');
+            var options = { "backdrop": "static", keyboard: true };
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Id": id },
+                datatype: "json",
+                success: function (data) {
+                    debugger;
+                    $('#myModalContent').html(data);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        });
+        //$("#closebtn").on('click',function(){
+        //    $('#myModal').modal('hide');
+
+        $("#closbtn").click(function () {
+            $('#myModal').modal('hide');
+        });
+    });
 </script>
 
 <style>
     .container {
-        max-width: 84vw
+        max-width: 100vw
+    }
+
+    table {
+        vertical-align: middle;
+        text-align: center
+    }
+
+    th {
+        padding: 2rem 0.5rem !important;
+        white-space: nowrap !important;
     }
 
     #AddStudent #UpdateStudent {
         margin: 0% 10%
     }
-</style>
+</astyle>

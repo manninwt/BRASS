@@ -11,8 +11,7 @@ namespace BRASS.Services
         {
             // create our NHibernate session factory  
             string connectionStringName = "Data Source=DESKTOP-UG9TO2R;Initial Catalog=BRASS;Integrated Security=True";
-            var sessionFactory = SessionFactoryBuilder.BuildSessionFactory(connectionStringName, true, true);
-            using (var session = sessionFactory.OpenSession())
+            using (var session = NHibernateHelper.OpenSession(connectionStringName))
             {
                 // populate the database  
                 using (var transaction = session.BeginTransaction())
@@ -34,7 +33,7 @@ namespace BRASS.Services
                     //session.SaveOrUpdate(student);
                     transaction.Commit();
                 }
-                using (var session2 = sessionFactory.OpenSession())
+                using (var session2 = NHibernateHelper.OpenSession(connectionStringName))
                 {
                     //Retreive the student to be added
                     using (session2.BeginTransaction())
@@ -53,28 +52,6 @@ namespace BRASS.Services
             Console.WriteLine(student.StudentStreetAddress);
             Console.WriteLine();
             return ("Success");
-        }
-
-        public string getWhileLoopData()
-        {
-            string connectionStringName = "Data Source=DESKTOP-UG9TO2R;Initial Catalog=BRASS;Integrated Security=True";
-            string htmlStr = "";
-            SqlConnection thisConnection = new SqlConnection(connectionStringName);
-            SqlCommand thisCommand = thisConnection.CreateCommand();
-            thisCommand.CommandText = "SELECT * FROM StudentInfo";
-            thisConnection.Open();
-            SqlDataReader reader = thisCommand.ExecuteReader();
-
-            while (reader.Read())
-            {
-                int id = reader.GetInt32(0);
-                string Name = reader.GetString(1);
-                string Pass = reader.GetString(2);
-                htmlStr += "<tr><td>" + id + "</td><td>" + Name + "</td><td>" + Pass + "</td></tr>";
-            }
-
-            thisConnection.Close();
-            return htmlStr;
         }
     }
 }
