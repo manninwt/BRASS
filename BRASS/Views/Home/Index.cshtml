@@ -2,12 +2,17 @@
     ViewData["Title"] = "Home Page";
 }
 
-<link rel="stylesheet" href="https://js.arcgis.com/4.14/esri/themes/light/main.css">
+<!--<link rel="stylesheet" href="https://esri.github.io/calcite-maps/dist/css/calcite-maps-bootstrap.min-v0.8.css">-->
+<!-- Calcite Maps -->
+<link rel="stylesheet" href="https://esri.github.io/calcite-maps/dist/css/calcite-maps-arcgis-4.x.min-v0.8.css">
+<!-- ArcGIS JS 4 -->
+<link rel="stylesheet" href="https://js.arcgis.com/4.13/esri/css/main.css">
 <script src="https://js.arcgis.com/4.14/"></script>
 
+<div clas="container">
 <div class="row" style="min-height:80vh">
-    <div class="col-lg-6" id="viewDiv" style="margin-bottom:auto;margin-top:auto;border:medium">
-        <h1>MAP GOES HERE</h1>
+    <div class="col-lg-6" id="viewDiv" style="border:medium;position:relative;height: 90vh;width: 80vw;margin: 0;padding: 0">
+        
     </div>
     <div class="col-lg-6">
         <div class="form-group" style="max-width:20vw">
@@ -20,12 +25,13 @@
                 <option>BUS 25</option>
             </select>
         </div>
-        <div>
+        <div class="col-lg-6">
             <h2>BUS INFO:</h2>
             <h3>ROUTE NUMBER: <p>11</p></h3>
-            =
+
         </div>
     </div>
+</div>
 </div>
 
 <script>
@@ -33,18 +39,170 @@
     require([
         "esri/Map",
         "esri/views/MapView",
-    ], function (Map, MapView) {
+      "esri/widgets/Legend",
+      "esri/widgets/ScaleBar",
+      "esri/tasks/RouteTask",
+      "esri/tasks/support/RouteParameters",
+      "esri/tasks/support/FeatureSet",
+      "esri/Graphic",
+      "esri/layers/GraphicsLayer"
+    ], function (Map, MapView, Legend, ScaleBar, RouteTask, RouteParameters, FeatureSet, Graphic, GraphicsLayer) {
 
         var map = new Map({
-            basemap: "topo-vector"
+            basemap: "streets-navigation-vector"
         });
 
         var view = new MapView({
             container: "viewDiv",
             map: map,
-            center: [-118.80500, 34.02700],
+            center: [-84.515,39.132],
             zoom: 13
         });
+        
+       var legend = new Legend({
+         view: view
+       });
+       
+       var scalebar = new ScaleBar({
+         view: view
+       });
+       
+     // create widget to display map coordinate information
+      var coordsWidget = document.createElement("div");
+      coordsWidget.id = "coordsWidget";
+      coordsWidget.className = "esri-widget esri-component";
+      coordsWidget.style.padding = "7px 15px 5px";
+      
+      // function to update innerHTML of coordsWidget
+      function showCoordinates(pt) {
+        var coords = "Lat/Lon " + pt.latitude.toFixed(3) + " " + pt.longitude.toFixed(3) +
+            " | Scale 1:" + Math.round(view.scale * 1) / 1 +
+            " | Zoom " + view.zoom;
+        coordsWidget.innerHTML = coords;
+      }
+
+      // updates coordsWidget to display center coordinates when map is stationary 
+      view.watch("stationary", function(isStationary) {
+        showCoordinates(view.center);
+      });
+
+      // update coordsWidget to display pointer coordinates when pointer is moving
+      // toMap converts screen coordinates to map coordinates
+      view.on("pointer-move", function(evt) {
+        showCoordinates(view.toMap({ x: evt.x, y: evt.y }));
+      });
+      
+       // graphics layer is used to store and display graphics
+      var graphicsLayer = new GraphicsLayer();
+      map.add(graphicsLayer);
+      
+       // create point
+       var point = {
+         type: "point",
+         longitude: -84.501,
+         latitude: 39.134
+       };
+       
+       var point2 = {
+         type: "point",
+         longitude: -84.502,
+         latitude: 39.131
+       };
+       
+       var point3 = {
+         type: "point",
+         longitude: -84.507,
+         latitude: 39.128
+       };
+       
+       var point4 = {
+         type: "point",
+         longitude: -84.516,
+         latitude: 39.126
+       };
+       
+       var point5 = {
+         type: "point",
+         longitude: -84.521,
+         latitude: 39.126
+       };
+       
+       var point6 = {
+         type: "point",
+         longitude: -84.528,
+         latitude: 39.130
+       };
+       
+       var point7 = {
+         type: "point",
+         longitude: -84.524,
+         latitude: 39.145
+       };
+      
+      // create a route task
+      var routeTask = new RouteTask({
+         url: "https://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World"
+      });
+      
+      // add start and finish point to graphics list when clicked jkhkj
+      view.on("click", function(event){
+        addGraphic("start",point);
+        addGraphic("middle",point2);
+        addGraphic("middle",point3);
+        addGraphic("middle",point4);
+        addGraphic("middle",point5);
+        addGraphic("middle",point6);
+        addGraphic("end",point7);
+        getRoute();
+      });
+
+      // define graphics for point
+      function addGraphic(type, point) {
+        var graphic = new Graphic({
+          symbol: {
+            type: "simple-marker",
+            color: (type === "start") ? "grey" : (type === "middle") ? "white" : "black",
+            size: "8px"
+          },
+          geometry: point
+        });
+        view.graphics.add(graphic);
+      }
+
+      function getRoute() {
+        // Setup the route parameters hi
+        var routeParams = new RouteParameters({
+          stops: new FeatureSet({
+            features: view.graphics.toArray() // Pass the array of graphics
+          }),
+          returnDirections: true
+        });
+        // Get the route
+        routeTask.solve(routeParams).then(showRoute);
+      }
+      
+        // Adds the solved route to the map as a graphic
+        function showRoute(data) {
+          // Display the route
+          
+          data.routeResults.forEach(function(result) {
+            result.route.symbol = {
+              type: "simple-line",
+              color: [5, 150, 255],
+              width: 3
+            };
+            view.graphics.add(result.route);
+          });
+        }
+
+       
+       view.ui.add(legend, "top-right");
+       view.ui.add(scalebar, "bottom-left");
+       view.ui.add(coordsWidget, "bottom-right");
+       
+       // won't work if put before view.ui.add... section
+
+
 
     });
 </script>
