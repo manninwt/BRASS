@@ -11,7 +11,6 @@
 
 <div class="row col-lg-12" style="margin-top:1%">
     <div class="col-lg-12">
-        <!--REPLACE WITH col-lg-8 DONE FOR PRESENTATION-->
         <div class="col-lg-12">
             <div class="form-group col-lg-12">
                 <select class="custom-select">
@@ -22,14 +21,6 @@
                 </select>
             </div>
             <div class="col-lg-12" style="overflow-y:auto;overflow-x:visible;max-height:70vh">
-                @if (ViewBag != null)
-                {
-                    <script type="text/javascript">
-            window.onload = function () {
-                alert("@ViewBag.students");
-            };
-                    </script>
-                }
                     <table class="table table-hover">
                         <thead>
                             <tr class="table-primary">
@@ -55,7 +46,7 @@
                                 <td>@student.StudentStreetAddress</td>
                                 <td>@student.City</td>
                                 <td>@student.ZipCode</td>
-                                <td> <a style="text-decoration: underline;" data-toggle="modal" data-target="#UpdateStudentModal">Edit</a></td>
+                                <td> <a style="text-decoration: underline;" data-toggle="modal" data-target="#UpdateStudentModal" data-student-name="student.FirstName">Edit</a></td>
                             </tr>
                         }
                     </table>
@@ -71,44 +62,47 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    @using (Html.BeginForm("AddStudent", "Home", FormMethod.Post))
+                    @using (Html.BeginForm("UpdateStudent", "Home", FormMethod.Post))
                     {
-                        <div class="col-lg-12" id="AddStudent">
-                            <h2>Add Student</h2>
-                            <div class="row">
-                                <div class="col-lg-6"><label>Student First Name: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("studentFirstName")</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6"><label>Student Last Name: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("studentLastName")</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6"><label>Parent First Name: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("parentFirstName")</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6"><label>Parent Last Name: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("parentLastName")</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6"><label>Parent Phone Number: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("parentPhoneNumber")</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6"><label>Student First Name: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("studentStreetAddress")</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6"><label>City: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("city")</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6"><label>ZipCode: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("zipCode")</div>
-                            </div>
-
+                    <div class="col-lg-12" id="UpdateStudent">
+                        <h2>Update Student</h2>
+                        <div class="row">
+                            <div class="col-lg-6"><label>Student First Name: </label></div>
+                            <div class="col-lg-6">@Html.TextBoxFor(s => s.FirstName)</div>
                         </div>
+                        <div class="row">
+                            <div class="col-lg-6"><label>Student Last Name: </label></div>
+                            <div class="col-lg-6">@Html.TextBoxFor(s => s.LastName)</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6"><label>Parent First Name: </label></div>
+                            <div class="col-lg-6">@Html.TextBoxFor(s => s.ParentFName)</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6"><label>Parent Last Name: </label></div>
+                            <div class="col-lg-6">@Html.TextBoxFor(s => s.ParentLName)</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6"><label>Parent Phone Number: </label></div>
+                            <div class="col-lg-6">@Html.TextBoxFor(s => s.ParentPhoneNumber, new { @maxlength = "10" })</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6"><label>Street Address: </label></div>
+                            <div class="col-lg-6">@Html.TextBoxFor(s => s.StudentStreetAddress)</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6"><label>City: </label></div>
+                            <div class="col-lg-6">@Html.TextBoxFor(s => s.City)</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6"><label>ZipCode: </label></div>
+                            <div class="col-lg-6">@Html.TextBoxFor(s => s.ZipCode, new { @maxlength = "5" })</div>
+                        </div>
+                        <div class="row">
+                            <input class="btn btn-primary" type="submit" value="Add Student">
+                        </div>
+
+                    </div>
                     }
                 </div>
                 <div class="modal-footer">
@@ -134,44 +128,41 @@
                             <h2>Add Student</h2>
                             <div class="row">
                                 <div class="col-lg-6"><label>Student First Name: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("studentFirstName")</div>
+                                <div class="col-lg-6">@Html.TextBoxFor(s => s.FirstName)</div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-6"><label>Student Last Name: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("studentLastName")</div>
+                                <div class="col-lg-6">@Html.TextBoxFor(s => s.LastName)</div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-6"><label>Parent First Name: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("parentFirstName")</div>
+                                <div class="col-lg-6">@Html.TextBoxFor(s => s.ParentFName)</div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-6"><label>Parent Last Name: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("parentLastName")</div>
+                                <div class="col-lg-6">@Html.TextBoxFor(s => s.ParentLName)</div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-6"><label>Parent Phone Number: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("parentPhoneNumber")</div>
+                                <div class="col-lg-6">@Html.TextBoxFor(s => s.ParentPhoneNumber, new { @maxlength = "10" })</div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-6"><label>Student First Name: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("studentStreetAddress")</div>
+                                <div class="col-lg-6"><label>Street Address: </label></div>
+                                <div class="col-lg-6">@Html.TextBoxFor(s => s.StudentStreetAddress)</div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-6"><label>City: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("city")</div>
+                                <div class="col-lg-6">@Html.TextBoxFor(s => s.City)</div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-6"><label>ZipCode: </label></div>
-                                <div class="col-lg-6">@Html.TextBox("zipCode")</div>
+                                <div class="col-lg-6">@Html.TextBoxFor(s => s.ZipCode, new { @maxlength = "5" })</div>
                             </div>
-                            
+                            <div class="row">
+                                <input class="btn btn-primary" type="submit" value="Add Student">
+                            </div>
                         </div>
                     }
-                </div>
-                <div class="modal-footer">
-                    <div class="row">
-                        <input class="btn btn-primary" type="submit" data-dismiss="modal" value="Add Student">
-                    </div>
                 </div>
             </div>
         </div>
@@ -191,57 +182,6 @@
     </div>
 </div>
 
-<script>
-    $('#addUpdateDropdown').change(function () {
-        console.log($('#addUpdateDropdown').val())
-        if ($('#addUpdateDropdown').val() == 1) {
-            document.getElementById('UpdateStudent').style.display = 'none';
-            document.getElementById('AddStudent').style.display = 'block';
-        }
-        else if ($('#addUpdateDropdown').val() == 2) {
-            document.getElementById('UpdateStudent').style.display = 'block';
-            document.getElementById('AddStudent').style.display = 'none';
-        }
-        else {
-            document.getElementById('UpdateStudent').style.display = 'none';
-            document.getElementById('AddStudent').style.display = 'none';
-        }
-    });
-
-    var TeamDetailPostBackURL = '/Home/Student';
-    $(function () {
-        $(".anchorDetail").click(function () {
-            debugger;
-            var $buttonClicked = $(this);
-            var id = $buttonClicked.attr('data-id');
-            var options = { "backdrop": "static", keyboard: true };
-            $.ajax({
-                type: "GET",
-                url: TeamDetailPostBackURL,
-                contentType: "application/json; charset=utf-8",
-                data: { "Id": id },
-                datatype: "json",
-                success: function (data) {
-                    debugger;
-                    $('#myModalContent').html(data);
-                    $('#myModal').modal(options);
-                    $('#myModal').modal('show');
-
-                },
-                error: function () {
-                    alert("Dynamic content load failed.");
-                }
-            });
-        });
-        //$("#closebtn").on('click',function(){
-        //    $('#myModal').modal('hide');
-
-        $("#closbtn").click(function () {
-            $('#myModal').modal('hide');
-        });
-    });
-</script>
-
 <style>
     .container {
         max-width: 100vw
@@ -260,4 +200,4 @@
     #AddStudent #UpdateStudent {
         margin: 0% 10%
     }
-</astyle>
+</style>
