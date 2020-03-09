@@ -6,17 +6,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BRASS.Models;
 using BRASS.Services;
+using System.Data;
 
 namespace BRASS.Controllers
 {
     public class HomeController : Controller
     {
         public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Students()
         {
             return View();
         }
