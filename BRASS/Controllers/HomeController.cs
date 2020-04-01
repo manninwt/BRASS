@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BRASS.Models;
-using BRASS.Services;
 using System.Data;
 
 namespace BRASS.Controllers
@@ -41,13 +40,6 @@ namespace BRASS.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        [HttpPost]
-        public ActionResult addStudent(string studentFirstName, string studentLastName, string parentFirstName, string parentLastName, string parentPhoneNumber, string studentStreetAddress, string city, string zipCode)
-        {
-            Services.StudentsService.AddStudent(studentFirstName, studentLastName, parentFirstName, parentLastName, parentPhoneNumber, studentStreetAddress, city, zipCode);
-            return RedirectToAction("Students");
         }
     }
 }

@@ -1,0 +1,30 @@
+﻿@model BRASS.Models.Routes
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Routes</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.RouteGroup)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RouteGroup)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BusId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BusId)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.RouteId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

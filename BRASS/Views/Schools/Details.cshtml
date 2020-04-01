@@ -1,0 +1,78 @@
+﻿@model BRASS.Models.School
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>School</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.SchoolName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SchoolName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SchoolAddress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SchoolAddress)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.City)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.City)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ZipCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ZipCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Longitude)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Longitude)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Lattitude)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Lattitude)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.NumbBuses)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NumbBuses)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ArrivalTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ArrivalTime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DepartureTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DepartureTime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RouteGroup)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RouteGroup)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.SchoolId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
