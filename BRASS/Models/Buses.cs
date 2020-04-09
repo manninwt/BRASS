@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BRASS.Models
 {
@@ -14,5 +16,8 @@ namespace BRASS.Models
         public string Handicap { get; set; }
         public int DriverId { get; set; }
         public int RouteId { get; set; }
+
+        [NotMapped]
+        public SelectList BusNumberList { get; set; }
     }
 }
