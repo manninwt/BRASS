@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Assignments\" />
+    <Folder Include="Assignments\Presentation\" />
     <Folder Include="Database\" />
   </ItemGroup>
 
