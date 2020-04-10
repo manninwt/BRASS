@@ -14,18 +14,6 @@ namespace BRASS.Controllers
     {
         private readonly SchoolContext _context;
 
-        private IEnumerable<SelectListItem> GetAllBuses()
-        {
-            IEnumerable<SelectListItem> list = _context.Buses.Select(s => new SelectListItem
-            {
-                Selected = false,
-                Text = "Bus Number" + s.BusNumb.ToString(),
-                Value = s.BusId.ToString()
-            });
-
-            return list;
-        }
-
         public HomeController(SchoolContext context)
         {
             _context = context;

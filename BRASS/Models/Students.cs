@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BRASS.Models
 {
@@ -17,5 +19,8 @@ namespace BRASS.Models
         public string City { get; set; }
         public string ZipCode { get; set; }
         public int StopId { get; set; }
+
+        [NotMapped]
+        public SelectList RouteList { get; set; }
     }
 }
