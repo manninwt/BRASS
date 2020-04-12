@@ -1,0 +1,72 @@
+﻿@model BRASS.Models.Drivers
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Drivers</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Condition)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Condition)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.StartAddress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StartAddress)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.StartCity)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StartCity)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.StartZipCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StartZipCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Longitude)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Longitude)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Lattitude)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Lattitude)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BusId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BusId)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.DriverId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

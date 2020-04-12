@@ -1,0 +1,3 @@
+﻿ALTER TABLE Bus
+ADD CONSTRAINT FK_Bus_DriverId FOREIGN KEY (DriverId) REFERENCES Driver(DriverId),
+	CONSTRAINT FK_Bus_RouteId FOREIGN KEY (RouteId) REFERENCES Route(RouteId);

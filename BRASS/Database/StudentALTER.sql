@@ -1,0 +1,3 @@
+﻿ALTER TABLE Student
+ADD CONSTRAINT FK_Student_StopId
+FOREIGN KEY (StopId) REFERENCES RouteStops(StopId);

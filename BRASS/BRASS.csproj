@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.4.0" />
     <PackageReference Include="FluentNHibernate" Version="2.1.2" />
     <PackageReference Include="jQuery" Version="3.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -19,7 +20,9 @@
 
   <ItemGroup>
     <Folder Include="Assignments\" />
-    <Folder Include="Database\" />
+    <Folder Include="Mappings\" />
+    <Folder Include="NhibernateHelper\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
