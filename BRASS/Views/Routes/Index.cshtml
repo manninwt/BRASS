@@ -6,36 +6,97 @@
 
 <h2>Routes</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.RouteGroup)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BusId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.RouteGroup)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BusId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.RouteId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.RouteId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.RouteId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="row col-lg-12" style="margin-top:1%">
+    <div class="container">
+        <div class = "row">
+            <div class="col-lg-8" style="overflow-y:auto;overflow-x:visible;max-height:70vh">
+                <select class="custom-select" style="width:25%;">
+                    <option selected="">Select Routes</option>
+                    <option value="1">All Routes</option>
+                    <option value="2">Route 3</option>
+                    <option value="3">Route 15</option>
+                </select>
+                <table class="table table-hover">
+                    <thead>
+                    <tr class="table-primary">
+                        <th>Student Name</th>
+                        <th>Address</th>
+                        <th>Stop Number</th>
+                        <th>Assigned Bus</th>
+                        <th>Duration</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Timon Mannings</td>
+                        <td>9353 County Road 101</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>45</td>
+                    </tr>
+                    <tr>
+                        <td>Bryan Huddleston</td>
+                        <td>2307 Liberty Street</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>45</td>
+                    </tr>
+                    <tr>
+                        <td>Braden Lance</td>
+                        <td>2311 Forest Hill Drive</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>45</td>
+                    </tr>
+                    <tr>
+                        <td>Nathan Boehringer</td>
+                        <td>5834 Vine Street</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>45</td>
+                    </tr>
+                    <tr>
+                        <td>Geralt OfRivia</td>
+                        <td>Barracs</td>
+                        <td>7</td>
+                        <td>7</td>
+                        <td>60</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-4 align-self-center">
+                <div class="container" style="text-align:center;">
+                    <h4>UNASSIGNED STUDENTS:</h4>
+                    <p>3</p>
+                    <h4>UNASSIGNED DRIVERS:</h4>
+                    <p>4</p>
+                    <button type="button" class="btn btn-outline-dark">Calculate Route(s)</button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .container {
+        max-width: 100vw
+    }
+
+    table {
+        vertical-align: middle;
+        text-align: center
+    }
+
+    th {
+        padding: 2rem 0.5rem !important;
+        white-space: nowrap !important;
+    }
+
+    #AddStudent #UpdateStudent {
+        margin: 0% 10%
+    }
+</style>
+
+                        
