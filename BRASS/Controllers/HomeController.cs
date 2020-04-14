@@ -26,6 +26,7 @@ namespace BRASS.Controllers
 
             var model = new Buses();
             List<SelectListItem> buses = new List<SelectListItem>();
+            buses.Add(new SelectListItem { Text = "0", Value = "All Buses", Selected=true});
             foreach (var busNumber in busNumbers)
             {
                 buses.Add(new SelectListItem { Text = busNumber.Value.ToString(), Value = busNumber.Text });
