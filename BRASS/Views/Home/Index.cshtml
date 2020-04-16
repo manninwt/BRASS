@@ -1,5 +1,5 @@
 ﻿@{
-@model Buses
+@model HomePage
  } 
 @{
     ViewData["Title"] = "Home Page";
@@ -13,24 +13,9 @@
 <script src="https://js.arcgis.com/4.14/"></script>
 
 <div clas="container">
-<div class="row" style="min-height:80vh">
-    <div class="col-lg-6" id="viewDiv" style="border:medium;position:relative;height: 90vh;width: 80vw;margin: 0;padding: 0">
-        
-    </div>
-    <div class="col-lg-6">
-        <div class="form-group" style="max-width:20vw">
-            <label for="exampleSelect2">Example multiple select</label>
-          <select multiple="" class="form-control" id="exampleSelect2">
-            <option>BUS 15</option>
-            <option>BUS 3</option>
-            <option>BUS 8</option>
-            <option>BUS 62</option>
-            <option>BUS 25</option>
-          </select>
-          <div class="row" style="min-height:80vh">
-            <div class="col-lg-6" id="viewDiv" style="border:medium;position:relative;height: 90vh;width: 80vw;margin: 0;padding: 0">
-            </div>
-            <div class="col-lg-6">
+    <div class="row" style="min-height:80vh">
+    <div class="col-lg-6" id="viewDiv" style="border:medium;position:relative;height: 90vh;width: 80vw;margin: 0;padding: 0"></div>
+        <div class="col-lg-6">
               <h2>BUS INFO:</h2>
               <h3>ROUTE NUMBER:
                 <p>11</p></h3>
@@ -38,21 +23,23 @@
                 <div class="col-lg-12">
                     <div class="form-group col-lg-6">
                         <label for="BusDropdown">Select A Bus</label>
-                        @Html.DropDownListFor(m => m.BusNumb, Model.BusNumberList, "---Select---", new { @id = "BusDropdown" })
+                        @Html.DropDownListFor(m => m.BusNumb, Model.BusNumberList, "---Select---", new { @id = "BusDropdown", @onchange = "myFunction()" })
                     </div>
                 </div>
                 <div class="row" style="justify-content:center;margin-top:10%">
-                    <div class="col-lg-12">
-                        <h2>BUS INFO:</h2>
-                        <h3>ROUTE NUMBER: <p>11</p></h3>
-
+                    <div class="col-lg-12" id="BusData">
+                        @if (Model.RoutePoints != null)
+                        {
+                            foreach (var element in Model.RoutePoints)
+                            {
+                                <p>@Html.DisplayFor(m => element.Lattitude)</p>
+                            }
+                        }
                     </div>
                 </div>
             </div>
-
-            </div>
-          </div>
-</div>
+        </div>
+    </div>
 </div>
 <style>
     .container {
@@ -61,6 +48,33 @@
     }
 </style>
 <script>
+
+    function myFunction() {
+        var x = $("#BusDropdown").val();
+        console.log(x)
+        $.ajax({
+            url: "/Home/GetSelectedValue",
+            data: { "id": parseInt(x) },
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data, status, xhr) {
+                var x = data[0]
+                var y = data[0].lattitued
+                var z = data[0, 0]
+                var xf = x[0]
+                var xq = x[1]
+                var xe = x.data.lattitued
+                console.log(xe)
+                console.log(data[0][0])
+                var res = eval("(" + xhr.responseText + ")");
+                alert(data[0].routePoints);
+            },
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                alert(err.Message);
+            }
+        });
+    }
 
     require([
         "esri/Map",
@@ -74,9 +88,6 @@
       "esri/layers/GraphicsLayer"
     ], function (Map, MapView, Legend, ScaleBar, RouteTask, RouteParameters, FeatureSet, Graphic, GraphicsLayer) {
 
-        $("#BusDropdown").change(function () {
-            alert($("#BusDropdown").val());
-        });
         var map = new Map({
             basemap: "streets-navigation-vector"
         });

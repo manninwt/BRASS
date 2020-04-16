@@ -36,15 +36,39 @@ namespace BRASS.Controllers
         {
             var busNumbers = _context.Buses.Select(x => new { Text = "Bus Number " + x.BusNumb.ToString(), Value = x.BusId });
 
-            var model = new Buses();
-            List<SelectListItem> buses = new List<SelectListItem>();
+            var model = new HomePage();
+            List<SelectListItem> homePage = new List<SelectListItem>();
             foreach (var busNumber in busNumbers)
             {
-                buses.Add(new SelectListItem { Text = busNumber.Value.ToString(), Value = busNumber.Text });
+                homePage.Add(new SelectListItem { Text = busNumber.Value.ToString(), Value = busNumber.Text });
             }
-            model.BusNumberList = new SelectList(buses, "Text", "Value");
+            model.BusNumberList = new SelectList(homePage, "Text", "Value");
 
             return View(model);
+        }
+
+        public ActionResult GetSelectedValue(int id)
+        {
+            using (var context = _context)
+            {
+                var routeQuery = from r in context.Routes
+                            where r.BusId == id
+                            select r;
+
+                var routeId = routeQuery.FirstOrDefault<Routes>().RouteId;
+
+                var routePointsQuery = from p in context.RoutePoints
+                                  where p.RouteId == routeId
+                                  select p;
+                var routePoints = routePointsQuery.ToList();
+
+                var model = new HomePage
+                {
+                    RoutePoints = routePoints
+                };
+
+                return Json(routePoints);
+            }
         }
     }
 }
