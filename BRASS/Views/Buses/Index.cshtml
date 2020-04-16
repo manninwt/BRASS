@@ -4,62 +4,66 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h2>Buses</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.BusNumb)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Capacity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Condition)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Handicap)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DriverId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RouteId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.BusNumb)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Capacity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Condition)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Handicap)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DriverId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RouteId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.BusId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BusId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BusId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="row col-lg-12" style="margin-top:1%">
+    <div class="col-lg-12">
+        <div class="col-lg-12">
+            <div class="col-lg-12" style="overflow-y:auto;overflow-x:visible;max-height:70vh">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="table-primary">
+                            <th>Bus Number</th>
+                            <th>Capacity</th>
+                            <th>Condition</th>
+                            <th>Route</th>
+                            <th>Driver</th>
+                            <th>Handicap</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.BusNumb)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Capacity)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Condition)</td>
+                                <td>@Html.DisplayFor(modelItem => item.RouteId)</td>
+                                <td>@Html.DisplayFor(modelItem => item.DriverId)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Handicap)</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.BusId">Edit</a> |
+                                    <a asp-action="Details" asp-route-id="@item.BusId">Details</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.BusId">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+    </div>
+</div>
+<style>
+    .container {
+        max-width: 100vw
+    }
+
+    table {
+        vertical-align: middle;
+        text-align: center
+    }
+
+    th {
+        padding: 2rem 0.5rem !important;
+        white-space: nowrap !important;
+    }
+
+    #AddBus #UpdateBus {
+        margin: 0% 10%
+    }
+</style>
