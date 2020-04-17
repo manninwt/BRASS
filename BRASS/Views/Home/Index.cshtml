@@ -58,16 +58,9 @@
             type: 'GET',
             contentType: 'application/json; charset=utf-8',
             success: function (data, status, xhr) {
-                var x = data[0]
-                var y = data[0].lattitued
-                var z = data[0, 0]
-                var xf = x[0]
-                var xq = x[1]
-                var xe = x.data.lattitued
-                console.log(xe)
-                console.log(data[0][0])
-                var res = eval("(" + xhr.responseText + ")");
-                alert(data[0].routePoints);
+                for (var i in data) {
+                    console.log(i + "Longitude: " + data[i].longitude + ", Lattitude: " + data[i].lattitude + ", RouteId: " + data[i].routeId )
+                }
             },
             error: function (xhr, status, error) {
                 var err = eval("(" + xhr.responseText + ")");
@@ -198,7 +191,26 @@
         }
         
         // get route stops from database based on busid
-        function getRoutePoints(busId){
+        function getRoutePoints() {
+        //    var x = $("#BusDropdown").val();
+        //    var routePointsArray = [];
+        //    $.ajax({
+        //        url: "/Home/GetSelectedValue",
+        //        data: { "id": parseInt(x) },
+        //        type: 'GET',
+        //        contentType: 'application/json; charset=utf-8',
+        //        success: function (data, status, xhr) {
+        //            for (var i in data) {
+        //                routePointsArry.append([data[i].longitude, data[i].lattitude])
+        //                console.log(i + "Longitude: " + data[i].longitude + ", Lattitude: " + data[i].lattitude + ", RouteId: " + data[i].routeId)
+        //            }
+        //            return callback.(routePointsArray)
+        //        },
+        //        error: function (xhr, status, error) {
+        //            var err = eval("(" + xhr.responseText + ")");
+        //            alert(err.Message);
+        //        }
+        //    });
           // query routeID from Routes table based on busID
           // query 2D Array of points with longitude and latitude from RoutePoints table based on routeID and store in routePonts
           // return route points
