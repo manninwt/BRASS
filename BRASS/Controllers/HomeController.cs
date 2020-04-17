@@ -1,45 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using BRASS.DataAccessLayer;
 using BRASS.Models;
-using System.Data;
 
 namespace BRASS.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly SchoolContext _context;
+
+        private IEnumerable<SelectListItem> GetAllBuses()
         {
-            return View();
+            IEnumerable<SelectListItem> list = _context.Buses.Select(s => new SelectListItem
+            {
+                Selected = false,
+                Text = "Bus Number" + s.BusNumb.ToString(),
+                Value = s.BusId.ToString()
+            });
+
+            return list;
         }
 
-        public IActionResult Drivers()
+        public HomeController(SchoolContext context)
         {
-            return View();
+            _context = context;
         }
 
-        public IActionResult School()
+        // GET: Buses
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var busNumbers = _context.Buses.Select(x => new { Text = "Bus Number " + x.BusNumb.ToString(), Value = x.BusId });
+
+            var model = new HomePage();
+            List<SelectListItem> homePage = new List<SelectListItem>();
+            foreach (var busNumber in busNumbers)
+            {
+                homePage.Add(new SelectListItem { Text = busNumber.Value.ToString(), Value = busNumber.Text });
+            }
+            model.BusNumberList = new SelectList(homePage, "Text", "Value");
+
+            return View(model);
         }
 
-        public IActionResult Routes()
+        public ActionResult GetSelectedValue(int id)
         {
-            return View();
-        }
+            using (var context = _context)
+            {
+                var routeQuery = from r in context.Routes
+                            where r.BusId == id
+                            select r;
 
-        public IActionResult Misc()
-        {
-            return View();
-        }
+                var routeId = routeQuery.FirstOrDefault<Routes>().RouteId;
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+                var routePointsQuery = from p in context.RoutePoints
+                                  where p.RouteId == routeId
+                                  select p;
+                var routePoints = routePointsQuery.ToList();
+
+                var model = new HomePage
+                {
+                    RoutePoints = routePoints
+                };
+
+                return Json(routePoints);
+            }
         }
     }
 }

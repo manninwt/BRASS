@@ -1,4 +1,7 @@
 ﻿@{
+@model HomePage
+ } 
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -10,31 +13,68 @@
 <script src="https://js.arcgis.com/4.14/"></script>
 
 <div clas="container">
-<div class="row" style="min-height:80vh">
-    <div class="col-lg-6" id="viewDiv" style="border:medium;position:relative;height: 90vh;width: 80vw;margin: 0;padding: 0">
-        
-    </div>
-    <div class="col-lg-6">
-        <div class="form-group" style="max-width:20vw">
-            <label for="exampleSelect2">Example multiple select</label>
-            <select multiple="" class="form-control" id="exampleSelect2">
-                <option>BUS 15</option>
-                <option>BUS 3</option>
-                <option>BUS 8</option>
-                <option>BUS 62</option>
-                <option>BUS 25</option>
-            </select>
-        </div>
+    <div class="row" style="min-height:80vh">
+    <div class="col-lg-6" id="viewDiv" style="border:medium;position:relative;height: 90vh;width: 80vw;margin: 0;padding: 0"></div>
         <div class="col-lg-6">
-            <h2>BUS INFO:</h2>
-            <h3>ROUTE NUMBER: <p>11</p></h3>
-
+              <h2>BUS INFO:</h2>
+              <h3>ROUTE NUMBER:
+                <p>11</p></h3>
+            <div class="row" style="justify-content:center">
+                <div class="col-lg-12">
+                    <div class="form-group col-lg-6">
+                        <label for="BusDropdown">Select A Bus</label>
+                        @Html.DropDownListFor(m => m.BusNumb, Model.BusNumberList, "---Select---", new { @id = "BusDropdown", @onchange = "myFunction()" })
+                    </div>
+                </div>
+                <div class="row" style="justify-content:center;margin-top:10%">
+                    <div class="col-lg-12" id="BusData">
+                        @if (Model.RoutePoints != null)
+                        {
+                            foreach (var element in Model.RoutePoints)
+                            {
+                                <p>@Html.DisplayFor(m => element.Lattitude)</p>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-</div>
-
+<style>
+    .container {
+        min-width: 75% !important;
+        max-width: 96% !important
+    }
+</style>
 <script>
+
+    function myFunction() {
+        var x = $("#BusDropdown").val();
+        console.log(x)
+        $.ajax({
+            url: "/Home/GetSelectedValue",
+            data: { "id": parseInt(x) },
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data, status, xhr) {
+                var x = data[0]
+                var y = data[0].lattitued
+                var z = data[0, 0]
+                var xf = x[0]
+                var xq = x[1]
+                var xe = x.data.lattitued
+                console.log(xe)
+                console.log(data[0][0])
+                var res = eval("(" + xhr.responseText + ")");
+                alert(data[0].routePoints);
+            },
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                alert(err.Message);
+            }
+        });
+    }
 
     require([
         "esri/Map",
@@ -75,7 +115,7 @@
       
       // function to update innerHTML of coordsWidget
       function showCoordinates(pt) {
-        var coords = "Lat/Lon " + pt.latitude.toFixed(3) + " " + pt.longitude.toFixed(3) +
+        var coords = "Lat/Lon " + pt.latitude.toFixed(5) + " " + pt.longitude.toFixed(5) +
             " | Scale 1:" + Math.round(view.scale * 1) / 1 +
             " | Zoom " + view.zoom;
         coordsWidget.innerHTML = coords;
@@ -96,68 +136,36 @@
       var graphicsLayer = new GraphicsLayer();
       map.add(graphicsLayer);
       
-       // create point
-       var point = {
-         type: "point",
-         longitude: -84.501,
-         latitude: 39.134
-       };
-       
-       var point2 = {
-         type: "point",
-         longitude: -84.502,
-         latitude: 39.131
-       };
-       
-       var point3 = {
-         type: "point",
-         longitude: -84.507,
-         latitude: 39.128
-       };
-       
-       var point4 = {
-         type: "point",
-         longitude: -84.516,
-         latitude: 39.126
-       };
-       
-       var point5 = {
-         type: "point",
-         longitude: -84.521,
-         latitude: 39.126
-       };
-       
-       var point6 = {
-         type: "point",
-         longitude: -84.528,
-         latitude: 39.130
-       };
-       
-       var point7 = {
-         type: "point",
-         longitude: -84.524,
-         latitude: 39.145
-       };
-      
+             
       // create a route task
       var routeTask = new RouteTask({
          url: "https://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World"
       });
       
-      // add start and finish point to graphics list when clicked jkhkj
+      // click map to display route
       view.on("click", function(event){
-        addGraphic("start",point);
-        addGraphic("middle",point2);
-        addGraphic("middle",point3);
-        addGraphic("middle",point4);
-        addGraphic("middle",point5);
-        addGraphic("middle",point6);
-        addGraphic("end",point7);
-        getRoute();
+        // var routeStops = getRouteStops(busID);
+        // var routePoints = getRoutePoints(busID);
+        var routeStops = [[-84.501, 39.134],
+                          [-84.502, 39.131],
+                          [-84.507, 39.128],
+                          [-84.516, 39.126],
+                          [-84.521, 39.126],
+                          [-84.528, 39.130],
+                          [-84.524, 39.145]];
+        var routePoints = [[-84.501, 39.134],
+                          [-84.502, 39.131],
+                          [-84.507, 39.128],
+                          [-84.516, 39.126],
+                          [-84.521, 39.126],
+                          [-84.528, 39.130],
+                          [-84.524, 39.145]];
+        displayRouteStops(routeStops);
+        displayRoute(routePoints);
       });
 
       // define graphics for point
-      function addGraphic(type, point) {
+      function addGraphicPoint(type, point) {
         var graphic = new Graphic({
           symbol: {
             type: "simple-marker",
@@ -168,8 +176,67 @@
         });
         view.graphics.add(graphic);
       }
+      
+      // define graphics for line segment
+      function addGraphicLine(line) {
+        var graphic = new Graphic({
+          symbol: {
+            type: "simple-line",
+            color: [5,150, 255],
+            width: 3
+          },
+          geometry: line
+        });
+        view.graphics.add(graphic);
+      }
+      
+        // get route stops from database based on busid
+        function getRouteStops(busId){
+          // query routeID from Routes table based on busID
+          // query 2D Array of stops with longitude and latitude from RouteStops table based on routeID and store in routeStops
+          // return route stops
+        }
+        
+        // get route stops from database based on busid
+        function getRoutePoints(busId){
+          // query routeID from Routes table based on busID
+          // query 2D Array of points with longitude and latitude from RoutePoints table based on routeID and store in routePonts
+          // return route points
+        }
+        
+        // display stops based on an input of 2D array containing long/lat for each stop 
+        function displayRouteStops(stops) {
+          for (var i = 0; i < stops.length; i++){
+            var point = {
+              type: "point",
+              longitude: stops[i][0],
+              latitude: stops[i][1]
+            };
+            if(i == 0){
+              addGraphicPoint("start", point);
+            } else if (i == stops.length - 1){
+              addGraphicPoint("end", point);
+            } else {
+              addGraphicPoint("middle", point);
+            }
+          }
+        }
+        
+        // display route
+        function displayRoute(points) {
+          for (var i = 0; i < points.length - 1; i++){
+            var line = {
+             type: "polyline",
+             paths: [
+               [points[i][0], points[i][1]],
+               [points[i + 1][0], points[i + 1][1]]
+             ]
+            };
+            addGraphicLine(line);
+          }
+        }
 
-      function getRoute() {
+      /*function getRoute() {
         // Setup the route parameters hi
         var routeParams = new RouteParameters({
           stops: new FeatureSet({
@@ -193,8 +260,8 @@
             };
             view.graphics.add(result.route);
           });
-        }
-
+        }*/
+        
        
        view.ui.add(legend, "top-right");
        view.ui.add(scalebar, "bottom-left");
