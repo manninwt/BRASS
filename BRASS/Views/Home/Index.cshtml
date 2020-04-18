@@ -58,7 +58,7 @@
             type: 'GET',
             contentType: 'application/json; charset=utf-8',
             success: function (data, status, xhr) {
-                for (var i in data) {
+                for (let i = 0; i < data.length; i++) {
                     console.log(i + "Longitude: " + data[i].longitude + ", Lattitude: " + data[i].lattitude + ", RouteId: " + data[i].routeId )
                 }
             },

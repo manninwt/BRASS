@@ -57,17 +57,11 @@ namespace BRASS.Controllers
 
                 var routeId = routeQuery.FirstOrDefault<Routes>().RouteId;
 
-                var routePointsQuery = from p in context.RoutePoints
-                                  where p.RouteId == routeId
-                                  select p;
-                var routePoints = routePointsQuery.ToList();
+                var routePointsList = context.RoutePoints.AsNoTracking()
+                    .Where(x => x.RouteId == routeId)
+                    .ToList();
 
-                var model = new HomePage
-                {
-                    RoutePoints = routePoints
-                };
-
-                return Json(routePoints);
+                return Json(routePointsList);
             }
         }
     }
