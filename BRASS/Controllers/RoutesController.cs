@@ -154,9 +154,9 @@ namespace BRASS.Controllers
         {
             using (var context = _context)
             {
-                var unassignedStudentsQuery = from r in context.Students
-                    where r.StopId == null
-                    select r;
+                var unassignedStudentsQuery = from s in context.Students
+                    where s.StopId == null
+                    select s;
                 var UnassignedStudents = unassignedStudentsQuery.ToList().Count;
                 return UnassignedStudents;           
             }

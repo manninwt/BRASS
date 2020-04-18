@@ -10,7 +10,5 @@ namespace BRASS.Models
         public int RouteId { get; set; }
         public char RouteGroup { get; set; }
         public int BusId { get; set; }
-        public int UnassignedStudents { get; set; }
-        public int UnassignedBuses { get; set; }
     }
 }

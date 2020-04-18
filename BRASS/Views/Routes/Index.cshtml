@@ -71,7 +71,7 @@
                 <div class="container" style="text-align:center;">
                     <h4>UNASSIGNED STUDENTS:</h4>
                     <div id="studentResultDiv">
-                        <p>text</p>
+                        <p>3</p>
                     </div>
                     <h4>UNASSIGNED DRIVERS:</h4>
                     <p>4
@@ -102,29 +102,5 @@
         margin: 0% 10%
     }
 </style>
-<script>
 
-function GetStudents(callback){
-    $.ajax({
-        url: "Routes/GetUnassignedStudents",
-        type: 'GET',
-        success: function(data){
-            callback(data)
-            console.log(data)
-        }
-    });  
-} 
-
-function GetStudents2(){
-    $.get("/Routes/GetUnassignedStudents",null, function (data){
-        alert(data);
-    });
-}
-
-/*getStudents(function(result){
-        document.getElementByID("studentResultDiv").innerHTML = result.toString();
-    });*/
-
-document.getElementById("studentResultDiv").innerHTML = GetStudents2().toString();
-</script>
                         
