@@ -1,6 +1,5 @@
-﻿@{
-@model HomePage
- } 
+﻿@model HomePage
+
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -23,7 +22,7 @@
                 <div class="col-lg-12">
                     <div class="form-group col-lg-6">
                         <label for="BusDropdown">Select A Bus</label>
-                        @Html.DropDownListFor(m => m.BusNumb, Model.BusNumberList, "---Select---", new { @id = "BusDropdown", @onchange = "myFunction()" })
+                        @Html.DropDownListFor(m => m.BusNumb, Model.BusNumberList, "All Buses", new { @id = "BusDropdown", @onchange = "GetRoutePoints()" })
                     </div>
                 </div>
                 <div class="row" style="justify-content:center;margin-top:10%">
@@ -49,7 +48,7 @@
 </style>
 <script>
 
-    function myFunction() {
+    function GetRoutePoints() {
         var x = $("#BusDropdown").val();
         console.log(x)
         $.ajax({
