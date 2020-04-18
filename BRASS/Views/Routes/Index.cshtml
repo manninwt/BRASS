@@ -1,4 +1,5 @@
-﻿@model IEnumerable<BRASS.Models.Routes>
+﻿@using BRASS.Controllers
+@model IEnumerable<BRASS.Models.Routes>
 
 @{
     ViewData["Title"] = "Index";
@@ -69,9 +70,12 @@
             <div class="col-lg-4 align-self-center">
                 <div class="container" style="text-align:center;">
                     <h4>UNASSIGNED STUDENTS:</h4>
-                    <p>3</p>
+                    <div id="studentResultDiv">
+                        <p>text</p>
+                    </div>
                     <h4>UNASSIGNED DRIVERS:</h4>
-                    <p>4</p>
+                    <p>4
+                       </p>
                     <button type="button" class="btn btn-outline-dark">Calculate Route(s)</button>
                 </div>
                 
@@ -98,5 +102,29 @@
         margin: 0% 10%
     }
 </style>
+<script>
 
+function GetStudents(callback){
+    $.ajax({
+        url: "Routes/GetUnassignedStudents",
+        type: 'GET',
+        success: function(data){
+            callback(data)
+            console.log(data)
+        }
+    });  
+} 
+
+function GetStudents2(){
+    $.get("/Routes/GetUnassignedStudents",null, function (data){
+        alert(data);
+    });
+}
+
+/*getStudents(function(result){
+        document.getElementByID("studentResultDiv").innerHTML = result.toString();
+    });*/
+
+document.getElementById("studentResultDiv").innerHTML = GetStudents2().toString();
+</script>
                         
