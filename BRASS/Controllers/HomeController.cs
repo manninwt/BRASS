@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BRASS.DataAccessLayer;
 using BRASS.Models;
+using NHibernate.Impl;
 
 namespace BRASS.Controllers
 {
@@ -57,17 +58,12 @@ namespace BRASS.Controllers
 
                 var routeId = routeQuery.FirstOrDefault<Routes>().RouteId;
 
-                var routePointsQuery = from p in context.RoutePoints
-                                  where p.RouteId == routeId
-                                  select p;
-                var routePoints = routePointsQuery.ToList();
 
-                var model = new HomePage
-                {
-                    RoutePoints = routePoints
-                };
-
-                return Json(routePoints);
+                var routePointsList = context.RoutePoints.AsNoTracking()
+                    .Where(x => x.RouteId == routeId)
+                    .ToList();
+                
+                return Json(routePointsList);
             }
         }
     }
