@@ -176,5 +176,29 @@ namespace BRASS.Controllers
         {
             return _context.Routes.Any(e => e.RouteId == id);
         }
+
+        public int GetUnassignedStudents()
+        {
+            using (var context = _context)
+            {
+                var unassignedStudentsQuery = from s in context.Students
+                    where s.StopId == null
+                    select s;
+                var UnassignedStudents = unassignedStudentsQuery.ToList().Count;
+                return UnassignedStudents;           
+            }
+        }
+        
+        public int GetUnassignedBuses()
+        {
+            using (var context = _context)
+            {
+                var unassignedBusesQuery = from r in context.Buses
+                    where r.RouteId == null
+                    select r;
+                var UnassignedBuses = unassignedBusesQuery.ToList().Count;
+                return UnassignedBuses;           
+            }
+        }
     }
 }
