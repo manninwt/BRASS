@@ -14,8 +14,8 @@ namespace BRASS.Models
         public string StartAddress { get; set; }
         public string StartCity { get; set; }
         public string StartZipCode { get; set; }
-        public double Longitude { get; set; }
-        public double Lattitude { get; set; }
+        public decimal Longitude { get; set; }
+        public decimal Lattitude { get; set; }
         public int BusId { get; set; }
     }
 }
