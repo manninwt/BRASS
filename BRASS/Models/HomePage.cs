@@ -22,6 +22,7 @@ namespace BRASS.Models
         [NotMapped]
         public SelectList BusNumberList { get; set; }
         public List<RoutePoints> RoutePoints { get; set; }
+        public List<RouteStops> RouteStops { get; set; }
 
     }
 }

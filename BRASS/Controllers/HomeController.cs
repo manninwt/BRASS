@@ -50,20 +50,78 @@ namespace BRASS.Controllers
 
         public ActionResult GetSelectedValue(int id)
         {
-            using (var context = _context)
+            if (id == 0)
             {
-                var routeQuery = from r in context.Routes
-                            where r.BusId == id
-                            select r;
+                using (var context = _context)
+                {
 
-                var routeId = routeQuery.FirstOrDefault<Routes>().RouteId;
+                    var routeQuery = context.Routes.AsNoTracking().ToList();
 
+                    var routeId = routeQuery.FirstOrDefault<Routes>().RouteId;
 
-                var routePointsList = context.RoutePoints.AsNoTracking()
-                    .Where(x => x.RouteId == routeId)
-                    .ToList();
-                
-                return Json(routePointsList);
+                    var routePointsList = context.RoutePoints.AsNoTracking()
+                        .Where(x => x.RouteId == routeId)
+                        .ToList();
+
+                    return Json(routePointsList);
+                }
+            }
+            else
+            {
+                using (var context = _context)
+                {
+
+                    var routeQuery = context.Routes.AsNoTracking()
+                        .Where(x => x.BusId == id)
+                        .ToList();
+
+                    var routeId = routeQuery.FirstOrDefault<Routes>().RouteId;
+
+                    var routePointsList = context.RoutePoints.AsNoTracking()
+                        .Where(x => x.RouteId == routeId)
+                        .ToList();
+
+                    return Json(routePointsList);
+                }
+            }
+        }
+        
+
+        public ActionResult GetSelectedValueStop(int id)
+        {
+            if (id == 0)
+            {
+                using (var context = _context)
+                {
+
+                    var routeQuery = context.Routes.AsNoTracking().ToList();
+
+                    var routeId = routeQuery.FirstOrDefault<Routes>().RouteId;
+
+                    var routeStopsList = context.RouteStops.AsNoTracking()
+                        .Where(x => x.RouteId == routeId)
+                        .ToList();
+
+                    return Json(routeStopsList);
+                }
+            }
+            else
+            {
+                using (var context = _context)
+                {
+
+                    var routeQuery = context.Routes.AsNoTracking()
+                        .Where(x => x.BusId == id)
+                        .ToList();
+
+                    var routeId = routeQuery.FirstOrDefault<Routes>().RouteId;
+
+                    var routeStopsList = context.RouteStops.AsNoTracking()
+                        .Where(x => x.RouteId == routeId)
+                        .ToList();
+
+                    return Json(routeStopsList);
+                }
             }
         }
     }
