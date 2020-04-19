@@ -1,4 +1,5 @@
-﻿@model IEnumerable<BRASS.Models.Students>
+﻿@using BRASS.Models.PageModels;
+@model StudentPage
 
 @{
     ViewData["Title"] = "Index";
@@ -9,35 +10,41 @@
 <div class="row col-lg-12" style="margin-top:1%">
     <div class="col-lg-12">
         <div class="col-lg-12">
-            <div class="form-group col-lg-12">
-                <select class="custom-select">
-                    <option selected="">Select Students</option>
-                    <option value="1">All Students</option>
-                    <option value="2">Route 3</option>
-                    <option value="3">Route 15</option>
-                </select>
-            </div>
             <div class="col-lg-12" style="overflow-y:auto;overflow-x:visible;max-height:70vh">
-                <table class="table table-hover">
+                <table class="table table-hover" id="StudentTable">
                     <thead>
                         <tr class="table-primary">
-                            <th>@Html.DisplayNameFor(model => model.FirstName)</th>
-                            <th>@Html.DisplayNameFor(model => model.LastName)</th>
+                            <th>@Html.DisplayName("Student Name")</th>
+                            <th>@Html.DisplayName("Parent Name")</th>
+                            <th>@Html.DisplayNameFor(model => model.ParentPhoneNumber)</th>
                             <th>@Html.DisplayNameFor(model => model.StreetAddress)</th>
                             <th>@Html.DisplayNameFor(model => model.City)</th>
-                            <th>@Html.DisplayNameFor(model => model.ZipCode)</th>
+                            <th>@Html.DisplayName("Assigned Bus")</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
+                        @foreach (var item in Model.StudentList)
                         {
+                            var busId = 0;
                             <tr>
-                                <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
-                                <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ParentFirstName) @Html.DisplayFor(modelItem => item.ParentLastName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ParentPhoneNumber)</td>
                                 <td>@Html.DisplayFor(modelItem => item.StreetAddress)</td>
                                 <td>@Html.DisplayFor(modelItem => item.City)</td>
-                                <td>@Html.DisplayFor(modelItem => item.ZipCode)</td>
+
+                                @foreach (var stop in Model.RouteStopsList)
+                                {
+                                    @foreach (var route in Model.RoutesList)
+                                    {
+                                        if (route.RouteId == stop.RouteId)
+                                        {
+                                            busId = route.BusId;
+                                        }
+                                    }
+                                }
+                                <td>@Html.DisplayFor(modelItem => busId)</td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.StudentId">Edit</a> |
                                     <a asp-action="Details" asp-route-id="@item.StudentId">Details</a> |
@@ -48,10 +55,10 @@
                     </tbody>
                 </table>
             </div>
+            <div class="col-lg-12" style="display:flex; justify-content:center">
+                <a class="btn btn-outline-dark" style="margin: 0 auto; display:block" asp-action="Create">Add Student</a>
+            </div>
         </div>
-        <p>
-            <a asp-action="Create">Create New</a>
-        </p>
     </div>
 </div>
 <style>
@@ -73,5 +80,40 @@
         margin: 0% 10%
     }
 </style>
+<script src="~/js/AccessTokenControl.js"></script>
+<script>
+    
+    ArcGisAPIController(AddressToGeo, ["5834 Vine Street", "Clifton", "45220"])
 
-                        
+    // ToDo: Need to be called from where address is created
+    function AddressToGeo(token, streetAddress, city, zipCode) {
+        var address = streetAddress + " " + city + " " + zipCode;
+
+        var options = {
+            "url": "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates",
+            "method": "GET",
+            "timeout": 0,
+            "headers":
+                { 'content-type': 'application/x-www-form-urlencoded' },
+            "data": {
+                "f": "json",
+                "token": token,
+                "singleLine": address
+            }
+        };
+
+        $.ajax(options)
+            .done(function (response) {
+                // location is define as {x,y}
+                location = response.location;
+                console.log(response);
+                // ToDo: needs call to database to set stop
+            })
+            .fail(function (xhr, status, error) {
+                console.log("Error in AddressToGeo: " + error);
+            });
+    }
+
+</script>
+
+

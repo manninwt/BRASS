@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BRASS.DataAccessLayer;
 using BRASS.Models;
+using BRASS.Models.PageModels;
 
 namespace BRASS.Controllers
 {
@@ -22,7 +23,32 @@ namespace BRASS.Controllers
         // GET: Students
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Students.ToListAsync());
+            using (var context = _context)
+            {
+                var RouteNumbers = context.Routes.Select(x => new { Text = "Route: " + x.RouteId.ToString(), Value = x.RouteId });
+
+                var model = new StudentPage();
+                List<SelectListItem> routes = new List<SelectListItem>();
+                foreach (var route in RouteNumbers)
+                {
+                    routes.Add(new SelectListItem { Text = route.Value.ToString(), Value = route.Text });
+                }
+                model.RouteList = new SelectList(routes, "Text", "Value");
+
+                var studentQuery = context.Students.AsNoTracking().ToList();
+                model.StudentList = studentQuery;
+
+                var RouteStopsQuery = context.RouteStops.AsNoTracking().ToList();
+                model.RouteStopsList = RouteStopsQuery;
+
+                var RoutesQuery = context.Routes.AsNoTracking().ToList();
+                model.RoutesList = RoutesQuery;
+
+                var BusesQuery = context.Buses.AsNoTracking().ToList();
+                model.BusList = BusesQuery;
+
+                return View(model);
+            }
         }
 
         // GET: Students/Details/5
@@ -148,6 +174,47 @@ namespace BRASS.Controllers
         private bool StudentsExists(int id)
         {
             return _context.Students.Any(e => e.StudentId == id);
+        }
+
+        public ActionResult GetStudentsOnRoute(int id)
+        {
+            if (id == 0)
+            {
+                using (var context = _context)
+                {
+                    var model = new StudentPage();
+
+                    var routeStopIds = context.RouteStops.AsNoTracking()
+                        .Select(x => x.StopId)
+                        .ToList();
+
+                    var studentList = context.Students.AsNoTracking()
+                        .Where(x => routeStopIds.Contains(x.StopId))
+                        .ToList();
+
+                    return Json(studentList);
+                }
+            }
+            else
+            {
+                using (var context = _context)
+                {
+                    var model = new StudentPage();
+
+                    var routeStopIds = context.RouteStops.AsNoTracking()
+                        .Where(x => x.RouteId == id)
+                        .Select(x => x.StopId)
+                        .ToList();
+
+                    var studentList = context.Students.AsNoTracking()
+                        .Where(x => routeStopIds.Contains(x.StopId))
+                        .ToList();
+
+                    model.StudentList = studentList;
+
+                    return Json(studentList);
+                }
+            }
         }
     }
 }

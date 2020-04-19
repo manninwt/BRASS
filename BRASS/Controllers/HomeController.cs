@@ -7,12 +7,16 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BRASS.DataAccessLayer;
 using BRASS.Models;
+using Microsoft.Extensions.Configuration;
+using System.Net;
+using System.IO;
 
 namespace BRASS.Controllers
 {
     public class HomeController : Controller
     {
         private readonly SchoolContext _context;
+        IConfiguration _iConfiguration;
 
         private IEnumerable<SelectListItem> GetAllBuses()
         {
@@ -26,9 +30,10 @@ namespace BRASS.Controllers
             return list;
         }
 
-        public HomeController(SchoolContext context)
+        public HomeController(SchoolContext context, IConfiguration iConfiguration)
         {
             _context = context;
+            _iConfiguration = iConfiguration;
         }
 
         // GET: Buses
@@ -49,25 +54,99 @@ namespace BRASS.Controllers
 
         public ActionResult GetSelectedValue(int id)
         {
+            if (id == 0)
+            {
+                using (var context = _context)
+                {
+
+                    var routeQuery = context.Routes.AsNoTracking().ToList();
+
+                    var routeId = routeQuery.FirstOrDefault<Routes>().RouteId;
+
+                    var routePointsList = context.RoutePoints.AsNoTracking()
+                        .Where(x => x.RouteId == routeId)
+                        .ToList();
+
+                    return Json(routePointsList);
+                }
+            }
+            else
+            {
+                using (var context = _context)
+                {
+
+                    var routeQuery = context.Routes.AsNoTracking()
+                        .Where(x => x.BusId == id)
+                        .ToList();
+
+                    var routeId = routeQuery.FirstOrDefault<Routes>().RouteId;
+
+                    var routePointsList = context.RoutePoints.AsNoTracking()
+                        .Where(x => x.RouteId == routeId)
+                        .ToList();
+
+                    return Json(routePointsList);
+                }
+            }
+        }
+
+        public ActionResult GetAllStopValues()
+        {
             using (var context = _context)
             {
-                var routeQuery = from r in context.Routes
-                            where r.BusId == id
-                            select r;
+                var routeStops = context.RouteStops.AsNoTracking().ToList();
 
-                var routeId = routeQuery.FirstOrDefault<Routes>().RouteId;
+                Console.WriteLine(routeStops);
+                return Json(routeStops);
+            }
+        }
 
-                var routePointsQuery = from p in context.RoutePoints
-                                  where p.RouteId == routeId
-                                  select p;
-                var routePoints = routePointsQuery.ToList();
+        public ActionResult GetMultiRouteInfo()
+        {
+            using (var context = _context)
+            {
+                var routeStops = context.RouteStops.AsNoTracking().ToList();
+                var school = context.School.AsNoTracking().ToList();
+                var drivers = context.Drivers.AsNoTracking().ToList();
+                var bus = context.Buses.AsNoTracking().ToList();
 
-                var model = new HomePage
-                {
-                    RoutePoints = routePoints
-                };
+                return Json(new MultiRouteInfo(Json(routeStops), Json(school), Json(drivers), Json(bus)));
+            }
+        }
 
-                return Json(routePoints);
+        public class MultiRouteInfo
+        {
+            private JsonResult routeStops;
+            private JsonResult school;
+            private JsonResult drivers;
+            private JsonResult bus;
+
+            public MultiRouteInfo(JsonResult routeStops, JsonResult school, JsonResult drivers, JsonResult bus)
+            {
+                this.routeStops = routeStops;
+                this.school = school;
+                this.drivers = drivers;
+                this.bus = bus;
+            }
+        }
+
+        public ActionResult GetAccessTokenCred()
+        {
+            var AccessTokenInfo = new AccessToken(_iConfiguration);
+            return Json(AccessTokenInfo);
+        }
+
+        public class AccessToken
+        {
+            public string client_id { get; set; }
+            public string client_secret { get; set; }
+            public string grant_type { get; set; }
+
+            public AccessToken(IConfiguration _iConfiguration)
+            {
+                this.client_id = _iConfiguration["AccessTokenInfo:client_id"];
+                this.client_secret = _iConfiguration["AccessTokenInfo:client_secret"];
+                this.grant_type = _iConfiguration["AccessTokenInfo:grant_type"];
             }
         }
     }

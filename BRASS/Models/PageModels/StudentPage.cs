@@ -3,10 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace BRASS.Models
+namespace BRASS.Models.PageModels
 {
-    public class Students
+    public class StudentPage
     {
         [Key]
         public int StudentId { get; set; }
@@ -19,5 +21,16 @@ namespace BRASS.Models
         public string City { get; set; }
         public string ZipCode { get; set; }
         public int StopId { get; set; }
+        public int RouteId { get; set; }
+        public char RouteGroup { get; set; }
+        public int BusId { get; set; }
+
+        [NotMapped]
+        public SelectList RouteList { get; set; }
+        public List<Students> StudentList { get; set; }
+        public List<RouteStops> RouteStopsList { get; set; }
+        public List<Routes> RoutesList { get; set; }
+        public List<Buses> BusList { get; set; }
+        public IDictionary<int, int> StudentBusIds { get; set; }
     }
 }

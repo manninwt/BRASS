@@ -1,4 +1,5 @@
-﻿@model IEnumerable<BRASS.Models.Routes>
+﻿@using BRASS.Models.PageModels;
+@model RoutesPage
 
 @{
     ViewData["Title"] = "Index";
@@ -8,73 +9,61 @@
 
 <div class="row col-lg-12" style="margin-top:1%">
     <div class="container">
-        <div class = "row">
+        <div class="row">
             <div class="col-lg-8" style="overflow-y:auto;overflow-x:visible;max-height:70vh">
-                <select class="custom-select" style="width:25%;">
-                    <option selected="">Select Routes</option>
-                    <option value="1">All Routes</option>
-                    <option value="2">Route 3</option>
-                    <option value="3">Route 15</option>
-                </select>
-                <table class="table table-hover">
+                <label for="RouteDropdown">Select A Route</label>
+                @Html.DropDownListFor(m => m.RouteId, Model.RouteList, "All Routes", new { @id = "RouteDropdown", @onchange = "TableUpdate()" })
+                <table class="table table-hover" id="StudentTable">
                     <thead>
-                    <tr class="table-primary">
-                        <th>Student Name</th>
-                        <th>Address</th>
-                        <th>Stop Number</th>
-                        <th>Assigned Bus</th>
-                        <th>Duration</th>
-                        <th></th>
-                    </tr>
+                        <tr class="table-primary">
+                            <th>@Html.DisplayName("Student Name")</th>
+                            <th>@Html.DisplayNameFor(model => model.StreetAddress)</th>
+                            <th>@Html.DisplayName("Stop Number")</th>
+                            <th>@Html.DisplayName("Assigned Bus")</th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>Timon Mannings</td>
-                        <td>9353 County Road 101</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>45</td>
-                    </tr>
-                    <tr>
-                        <td>Bryan Huddleston</td>
-                        <td>2307 Liberty Street</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>45</td>
-                    </tr>
-                    <tr>
-                        <td>Braden Lance</td>
-                        <td>2311 Forest Hill Drive</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>45</td>
-                    </tr>
-                    <tr>
-                        <td>Nathan Boehringer</td>
-                        <td>5834 Vine Street</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>45</td>
-                    </tr>
-                    <tr>
-                        <td>Geralt OfRivia</td>
-                        <td>Barracs</td>
-                        <td>7</td>
-                        <td>7</td>
-                        <td>60</td>
-                    </tr>
+                        @foreach (var item in Model.StudentList)
+                        {
+                            var busId = 0;
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.StreetAddress)</td>
+                            @foreach (var stop in Model.RouteStopsList)
+                            {
+                                if (stop.StopId == item.StopId)
+                                {
+                                    <td>@Html.DisplayFor(modelItem => stop.StopNumber)</td>
+                                }
+                                @foreach (var route in Model.RoutesList)
+                                {
+                                    if (route.RouteId == stop.RouteId)
+                                    {
+                                        busId = route.BusId;
+                                    }
+                                }
+                            }
+                            <td>@Html.DisplayFor(modelItem => busId)</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.StudentId">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.StudentId">Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.StudentId">Delete</a>
+                            </td>
+                        </tr>
+                        }
                     </tbody>
                 </table>
             </div>
             <div class="col-lg-4 align-self-center">
                 <div class="container" style="text-align:center;">
                     <h4>UNASSIGNED STUDENTS:</h4>
-                    <p>3</p>
+                    <p>@Html.DisplayFor(model => model.unAssignedStudents)</p>
                     <h4>UNASSIGNED DRIVERS:</h4>
-                    <p>4</p>
+                    <p>@Html.DisplayFor(model => model.unAssignedBuses)</p>
                     <button type="button" class="btn btn-outline-dark">Calculate Route(s)</button>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -98,5 +87,48 @@
         margin: 0% 10%
     }
 </style>
+<script>
+    function TableUpdate() {
+        var x = $("#RouteDropdown").val();
+        $.ajax({
+            url: "/Routes/GetStudentsOnRoute",
+            data: { "id": parseInt(x) },
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data, status, xhr) {
 
-                        
+                var thead_content = '';
+
+                thead_content += '<tr class="table-primary">';
+                thead_content += '<th>Student Name</th>';
+                thead_content += '<th>Street Address</th>';
+                thead_content += '<th>Stop Number</th>';
+                thead_content += '<th>Assigned Bus</th>';
+                thead_content += '<th></th>';
+                thead_content += '</tr>';
+
+                $('#StudentTable thead').html(thead_content);
+
+                var tbody_content = '';
+
+                for(let i = 0; i < data.length; i++) {
+                    tbody_content += '<tr></tr>';
+                    tbody_content += '<td>' + data[i].firstName + " " + data[i].lastName + '</td>';
+                    tbody_content += '<td>' + data[i].streetAddress + '</td>';
+                    tbody_content += '<td>' + data[i].stopNumber + '</td>';
+                    tbody_content += '<td>' + data[i].busNumber + '</td>';
+                    tbody_content += '<td><a asp-action="Edit" asp-route-id="' + data[i].StudentId +
+                        '">Edit</a> | <a asp-action="Details" asp-route-id="' + +data[i].StudentId +
+                        '">Details</a> | <a asp-action="Delete" asp-route-id="' + data[i].StudentId + '">Delete</a></td>';
+                }
+
+                $('#StudentTable tbody').html(tbody_content);
+            },
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                alert(err.Message);
+            }
+        });
+    }
+</script>
+
