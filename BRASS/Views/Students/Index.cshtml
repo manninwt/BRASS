@@ -70,6 +70,7 @@
         margin: 0% 10%
     }
 </style>
+<script src="~/js/AccessTokenControl.js"></script>
 <script>
     function TableUpdate() {
         var x = $("#RouteDropdown").val();
@@ -94,7 +95,7 @@
                 $('#StudentTable thead').html(thead_content);
 
                 var tbody_content = '';
-                
+
                 for(let i = 0; i < data.length; i++) {
                     tbody_content += '<tr></tr>';
                     tbody_content += '<td>' + data[i].firstName + '</td>';
@@ -115,6 +116,40 @@
             }
         });
     }
+
+
+
+    ArcGisAPIController(AddressToGeo, ["5834 Vine Street", "Clifton", "45220"])
+
+    // ToDo: Need to be called from where 
+    function AddressToGeo(token, streetAddress, city, zipCode) {
+        var address = streetAddress + " " + city + " " + zipCode;
+
+        var options = {
+            "url": "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates",
+            "method": "GET",
+            "timeout": 0,
+            "headers":
+                { 'content-type': 'application/x-www-form-urlencoded' },
+            "data": {
+                "f": "json",
+                "token": token,
+                "singleLine": address
+            }
+        };
+
+        $.ajax(options)
+            .done(function (response) {
+                // location is define as {x,y}
+                location = response.location;
+                console.log(response);
+                // ToDo: needs call to database to set stop
+            })
+            .fail(function (xhr, status, error) {
+                console.log("Error in AddressToGeo: " + error);
+            });
+    }
+
 </script>
 
-                        
+
