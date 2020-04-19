@@ -31,5 +31,7 @@ namespace BRASS.Models.PageModels
         public List<RouteStops> RouteStopsList { get; set; }
         public List<Routes> RoutesList { get; set; }
         public List<Buses> BusList { get; set; }
+        public int unAssignedStudents { get; set; }
+        public int unAssignedBuses { get; set; }
     }
 }

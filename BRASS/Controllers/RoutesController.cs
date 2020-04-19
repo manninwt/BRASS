@@ -48,6 +48,18 @@ namespace BRASS.Controllers
                 var BusesQuery = context.Buses.AsNoTracking().ToList();
                 model.BusList = BusesQuery;
 
+                var unassignedStudentsQuery = context.Students.AsNoTracking()
+                    .Where(x => x.StopId == 0)
+                    .ToList();
+                var UnassignedStudents = unassignedStudentsQuery.Count;
+                model.unAssignedStudents = UnassignedStudents;
+
+                var unassignedBusesQuery = context.Routes.AsNoTracking()
+                    .Where(x => x.RouteId == 0)
+                    .ToList();
+                var UnassignedBuses = unassignedBusesQuery.Count;
+                model.unAssignedBuses = UnassignedBuses;
+
                 return View(model);
             }
         }
@@ -177,27 +189,73 @@ namespace BRASS.Controllers
             return _context.Routes.Any(e => e.RouteId == id);
         }
 
-        public int GetUnassignedStudents()
+        public ActionResult GetStudentsOnRoute(int id, List<Routes> routeList)
         {
-            using (var context = _context)
+            List<RoutesPageTable> routesPageTable = new List<RoutesPageTable>();
+            if (id == 0)
             {
-                var unassignedStudentsQuery = from s in context.Students
-                    where s.StopId == null
-                    select s;
-                var UnassignedStudents = unassignedStudentsQuery.ToList().Count;
-                return UnassignedStudents;           
+                using (var context = _context)
+                {
+                    var routeStopIds = context.RouteStops.AsNoTracking()
+                        .Select(x => x.StopId)
+                        .ToList();
+
+                    var studentList = context.Students.AsNoTracking()
+                        .Where(x => routeStopIds.Contains(x.StopId))
+                        .ToList();
+
+                    foreach(Students student in studentList)
+                    {
+                        var studentStop = context.RouteStops.AsNoTracking().Where(x => x.StopId == student.StopId).Select(x => x.StopNumber).FirstOrDefault();
+                        var studentRoute = context.RouteStops.AsNoTracking().Where(x => x.StopId == student.StopId).Select(x => x.RouteId).FirstOrDefault();
+                        var studentBus = context.Buses.AsNoTracking().Where(x => x.RouteId == studentRoute).Select(x => x.BusNumb).FirstOrDefault();
+
+                        RoutesPageTable row = new RoutesPageTable();
+                        row.FirstName = student.FirstName;
+                        row.LastName = student.LastName;
+                        row.StreetAddress = student.StreetAddress;
+                        row.StopNumber = studentStop;
+                        row.BusNumber = studentBus;
+
+                        routesPageTable.Add(row);
+                    }
+
+                    return Json(studentList);
+                }
             }
-        }
-        
-        public int GetUnassignedBuses()
-        {
-            using (var context = _context)
+            else
             {
-                var unassignedBusesQuery = from r in context.Buses
-                    where r.RouteId == null
-                    select r;
-                var UnassignedBuses = unassignedBusesQuery.ToList().Count;
-                return UnassignedBuses;           
+                using (var context = _context)
+                {
+                    var model = new RoutesPage();
+
+                    var routeStopIds = context.RouteStops.AsNoTracking()
+                        .Where(x => x.RouteId == id)
+                        .Select(x => x.StopId)
+                        .ToList();
+
+                    var studentList = context.Students.AsNoTracking()
+                        .Where(x => routeStopIds.Contains(x.StopId))
+                        .ToList();
+
+                    foreach (Students student in studentList)
+                    {
+                        var studentStop = context.RouteStops.AsNoTracking().Where(x => x.StopId == student.StopId).Select(x => x.StopNumber).FirstOrDefault();
+                        var studentRoute = context.RouteStops.AsNoTracking().Where(x => x.StopId == student.StopId).Select(x => x.RouteId).FirstOrDefault();
+                        var studentBus = context.Buses.AsNoTracking().Where(x => x.RouteId == studentRoute).Select(x => x.BusNumb).FirstOrDefault();
+
+                        RoutesPageTable row = new RoutesPageTable();
+                        row.FirstName = student.FirstName;
+                        row.LastName = student.LastName;
+                        row.StreetAddress = student.StreetAddress;
+                        row.StopNumber = studentStop;
+                        row.BusNumber = studentBus;
+
+                        routesPageTable.Add(row);
+                    }
+
+                    return Json(routesPageTable);
+                }
             }
         }
     }
