@@ -13,24 +13,22 @@
             <div class="col-lg-8" style="overflow-y:auto;overflow-x:visible;max-height:70vh">
                 <label for="RouteDropdown">Select A Route</label>
                 @Html.DropDownListFor(m => m.RouteId, Model.RouteList, "All Routes", new { @id = "RouteDropdown", @onchange = "TableUpdate()" })
-                <table class="table table-hover" id="RouteTable">
+                <table class="table table-hover" id="StudentTable">
                     <thead>
                         <tr class="table-primary">
-                            <th>@Html.DisplayNameFor(model => model.FirstName)</th>
-                            <th>@Html.DisplayNameFor(model => model.LastName)</th>
+                            <th>@Html.DisplayName("Student Name")</th>
                             <th>@Html.DisplayNameFor(model => model.StreetAddress)</th>
                             <th>@Html.DisplayName("Stop Number")</th>
                             <th>@Html.DisplayName("Assigned Bus")</th>
-                            <th>@Html.DisplayName("Duration")</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model.StudentList)
                         {
+                            var busId = 0;
                         <tr>
-                            <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
-                            <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</td>
                             <td>@Html.DisplayFor(modelItem => item.StreetAddress)</td>
                             @foreach (var stop in Model.RouteStopsList)
                             {
@@ -42,10 +40,11 @@
                                 {
                                     if (route.RouteId == stop.RouteId)
                                     {
-                                        <td>@Html.DisplayFor(modelItem => route.BusId)</td>
+                                        busId = route.BusId;
                                     }
                                 }
                             }
+                            <td>@Html.DisplayFor(modelItem => busId)</td>
                             <td>
                                 <a asp-action="Edit" asp-route-id="@item.StudentId">Edit</a> |
                                 <a asp-action="Details" asp-route-id="@item.StudentId">Details</a> |
@@ -59,9 +58,9 @@
             <div class="col-lg-4 align-self-center">
                 <div class="container" style="text-align:center;">
                     <h4>UNASSIGNED STUDENTS:</h4>
-                    <p>3</p>
+                    <p>@Html.DisplayFor(model => model.unAssignedStudents)</p>
                     <h4>UNASSIGNED DRIVERS:</h4>
-                    <p>4</p>
+                    <p>@Html.DisplayFor(model => model.unAssignedBuses)</p>
                     <button type="button" class="btn btn-outline-dark">Calculate Route(s)</button>
                 </div>
 
@@ -92,7 +91,7 @@
     function TableUpdate() {
         var x = $("#RouteDropdown").val();
         $.ajax({
-            url: "/Students/GetStudentsOnRoute",
+            url: "/Routes/GetStudentsOnRoute",
             data: { "id": parseInt(x) },
             type: 'GET',
             contentType: 'application/json; charset=utf-8',
@@ -101,11 +100,10 @@
                 var thead_content = '';
 
                 thead_content += '<tr class="table-primary">';
-                thead_content += '<th>First Name</th>';
-                thead_content += '<th>Last Name</th>';
+                thead_content += '<th>Student Name</th>';
                 thead_content += '<th>Street Address</th>';
-                thead_content += '<th>City</th>';
-                thead_content += '<th>Zip Code</th>';
+                thead_content += '<th>Stop Number</th>';
+                thead_content += '<th>Assigned Bus</th>';
                 thead_content += '<th></th>';
                 thead_content += '</tr>';
 
@@ -115,11 +113,10 @@
 
                 for(let i = 0; i < data.length; i++) {
                     tbody_content += '<tr></tr>';
-                    tbody_content += '<td>' + data[i].firstName + '</td>';
-                    tbody_content += '<td>' + data[i].lastName + '</td>';
+                    tbody_content += '<td>' + data[i].firstName + " " + data[i].lastName + '</td>';
                     tbody_content += '<td>' + data[i].streetAddress + '</td>';
-                    tbody_content += '<td>' + data[i].city + '</td>';
-                    tbody_content += '<td>' + data[i].zipCode + '</td>';
+                    tbody_content += '<td>' + data[i].stopNumber + '</td>';
+                    tbody_content += '<td>' + data[i].busNumber + '</td>';
                     tbody_content += '<td><a asp-action="Edit" asp-route-id="' + data[i].StudentId +
                         '">Edit</a> | <a asp-action="Details" asp-route-id="' + +data[i].StudentId +
                         '">Details</a> | <a asp-action="Delete" asp-route-id="' + data[i].StudentId + '">Delete</a></td>';

@@ -35,10 +35,17 @@ namespace BRASS.Controllers
                 }
                 model.RouteList = new SelectList(routes, "Text", "Value");
 
-
                 var studentQuery = context.Students.AsNoTracking().ToList();
-
                 model.StudentList = studentQuery;
+
+                var RouteStopsQuery = context.RouteStops.AsNoTracking().ToList();
+                model.RouteStopsList = RouteStopsQuery;
+
+                var RoutesQuery = context.Routes.AsNoTracking().ToList();
+                model.RoutesList = RoutesQuery;
+
+                var BusesQuery = context.Buses.AsNoTracking().ToList();
+                model.BusList = BusesQuery;
 
                 return View(model);
             }

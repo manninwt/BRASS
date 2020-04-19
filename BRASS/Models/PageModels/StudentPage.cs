@@ -28,5 +28,9 @@ namespace BRASS.Models.PageModels
         [NotMapped]
         public SelectList RouteList { get; set; }
         public List<Students> StudentList { get; set; }
+        public List<RouteStops> RouteStopsList { get; set; }
+        public List<Routes> RoutesList { get; set; }
+        public List<Buses> BusList { get; set; }
+        public IDictionary<int, int> StudentBusIds { get; set; }
     }
 }
