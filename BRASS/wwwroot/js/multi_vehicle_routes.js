@@ -134,6 +134,24 @@ function GetDriverValues() {
     });
 }
 
+function GetRoutePointsValues() {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: "/Home/GetRoutePoints",
+            data: {},
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data, status, xhr) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                alert(err.Message);
+            }
+        })
+    });
+}
+
 function routeTimeFeature(name, longitude, lattitude, ServiceTime = 10){
     return {
                 "attributes": {
@@ -178,11 +196,6 @@ async function GetMultiRouteInfo() {
     var busses = await GetBusValues();
     var drivers = await GetDriverValues();
 
-    console.log(stops);
-    console.log(school);
-    console.log(busses);
-    console.log(drivers);
-
     var schoold_depot_name = school[0].schoolName;
     info.depots_info.features.push(routeFeature(schoold_depot_name, school[0].longitude, school[0].lattitude))
     for (i = 0; i < drivers.length; i++) {
@@ -204,16 +217,82 @@ async function GetMultiRouteInfo() {
         }
     }
     for (i = 0; i < stops.length; i++) {
-        info.order_info.features.push(routeTimeFeature("Stop " + stops[i].stopNumber, stops[i].longitude, stops[i].lattitude, 10))
+        if (stops[i].longitude != 0 && stops[i].lattitude != 0) {
+            info.order_info.features.push(routeTimeFeature(stops[i].stopId, stops[i].longitude, stops[i].lattitude, 10))
+        }
     }
 
-    console.log(info);
+    controller(function () { complexRouteAsync(info) })
+}
+
+async function GetAddedStudentInfo() {
+    var info = {
+        "type": "features",
+        "features": []
+    }
+    var stops = await GetAllStopValues();
+    var routePoints = await GetRoutePointsValues();
+    var school = await GetSchoolValues();
+    var drivers = await GetDriverValues();
+
+    info.features.push(routeFeature(school[0].schoolName, school[0].longitude, school[0].lattitude))
+
+    var routes = {}
+    var addedStops = []
+    for (i = 0; i < stops.length; i++) {
+        if (stops[i].longitude != 0 && stops[i].lattitude != 0) {
+            if (stops[i].routeId == 0) {
+                addedStops.push({ "stopId": stops[i].stopId, "stopNumber": stops[i].stopNumber, "routeId": 0, "longitude": stops[i].longitude, "lattitude": stops[i].lattitude, minDist: 0 })
+            } else if (routes[stops[i].routeId]) {
+                routes[stops[i].routeId][stops[i].stopNumber] = { "stopId": stops[i].stopId, "stopNumber": stops[i].stopNumber, "longitude": stops[i].longitude, "lattitude": stops[i].lattitude }
+            } else {
+                var stop = {}
+                stop[stops[i].stopNumber] = {
+                    "stopId": stops[i].stopId,
+                    "stopNumber": stops[i].stopNumber,
+                    "longitude": stops[i].longitude,
+                    "lattitude": stops[i].lattitude
+                }
+                routes[stops[i].routeId] = stop
+            }
+        }
+    }
+
+    // Figures out which route each new stop will be added to
+    for (i = 0; i < routePoints.length; i++) {
+        for (j = 0; j < addedStops.length; j++) {
+            var distance = Math.sqrt((routePoints[i].longitude - addedStops[j].longitude) ** 2 + (routePoints[i].lattitude - addedStops[j].lattitude) ** 2);
+            if (addedStops[j].minDist != 0 && addedStops[j].minDist > distance) {
+                addedStops[j].minDist = distance
+                addedStops[j].routeId = routePoints[i].routeId
+            } else if (addedStops[i].minDist == 0){
+                addedStops[j].minDist = distance
+                addedStops[j].routeId = routePoints[i].routeId
+            }
+        }
+    }
+
+    // Figures out where in the route each new stop will be
+    for (i = 0; i < addedStops.length; i++) {
+        addedStops[i].minDist = 0
+        var routeId = addedStops[i].routeId
+        for (j = 1; j <= Object.keys(routes[routeId]).length; j++) {
+            console.log(routes[routeId])
+            var distance = Math.sqrt((addedStops[i].longitude - routes[routeId][j].longitude) ** 2 + (addedStops[i].lattitude - routes[routeId][j].lattitude) ** 2);
+            if (addedStops[i].minDist != 0 && addedStops[i].minDist > distance) {
+                addedStops[i].minDist = distance
+                addedStops[i].stopNumber = j
+            } else if (addedStops[i].minDist == 0){
+                addedStops[i].minDist = distance
+                addedStops[i].stopNumber = j
+            }
+        }
+    }
 }
 
 // call using - controller(complexRouteAsync);
 // expsive call in arcgis credits, please be sure you have all the right data
-async function complexRouteAsync() {
-    var info = GetMultiRouteInfo();
+async function complexRouteAsync(info) {
 
     var options = {
         "url": "https://logistics.arcgis.com/arcgis/rest/services/World/VehicleRoutingProblem/GPServer/SolveVehicleRoutingProblem/submitJob",
@@ -380,14 +459,41 @@ function getCompletedRoutes(job) {
         }
     };
 
-    $.ajax(options)
-        .done(function (response) {
-            console.log("Success, getCompletedRoutes")
-            console.log(response);
-        })
-        .fail(function (xhr, status, error) {
-            console.log("Error in getCompletedRoutes: " + error);
-        });
+    return new Promise(function (resolve, reject) {
+        $.ajax(options)
+            .done(function (response) {
+                console.log("Success, getCompletedRoutes")
+                resolve(response);
+            })
+            .fail(function (xhr, status, error) {
+                console.log("Error in getCompletedRoutes: " + error);
+            });
+    })
+}
+
+function getCompletedStops(job) {
+    var options = {
+        method: 'POST',
+        url: 'https://logistics.arcgis.com/arcgis/rest/services/World/VehicleRoutingProblem/GPServer/SolveVehicleRoutingProblem/jobs/' + job + '/results/out_stops?',
+        headers:
+            { 'content-type': 'application/x-www-form-urlencoded' },
+        data:
+        {
+            f: 'json',
+            token: access_token
+        }
+    };
+
+    return new Promise(function (resolve, reject) {
+        $.ajax(options)
+            .done(function (response) {
+                console.log("Success, getCompletedStops")
+                resolve(response);
+            })
+            .fail(function (xhr, status, error) {
+                console.log("Error in getCompletedStops: " + error);
+            });
+    })
 }
 
 async function waitForJobComplete(job) {
@@ -399,7 +505,8 @@ async function waitForJobComplete(job) {
         console.log(jobStatus)
         if (jobStatus == "esriJobSucceeded") {
             console.log("Job completed succesfully");
-            getCompletedRoutes(job);
+            routes = await getCompletedRoutes(job);
+            stops = await getCompletedStops(job);
             break;
         }
         else if (jobStatus.match(/^(esriJobFailed|esriJobTimedOut|esriJobCancelled)$/)) {
