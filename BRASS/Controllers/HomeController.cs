@@ -201,6 +201,16 @@ namespace BRASS.Controllers
             return Json(AccessTokenInfo);
         }
 
+        public ActionResult GetRoutePoints()
+        {
+            using (var context = _context)
+            {
+                var bus = context.RoutePoints.AsNoTracking().ToList();
+
+                return Json(bus);
+            }
+        }
+
         public class AccessToken
         {
             public string client_id { get; set; }
