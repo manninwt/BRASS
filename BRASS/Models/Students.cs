@@ -19,5 +19,8 @@ namespace BRASS.Models
         public string City { get; set; }
         public string ZipCode { get; set; }
         public int StopId { get; set; }
+
+        [NotMapped]
+        public SelectList RouteList { get; set; }
     }
 }

@@ -18,6 +18,7 @@ namespace BRASS.Controllers
         private readonly SchoolContext _context;
         IConfiguration _iConfiguration;
 
+
         private IEnumerable<SelectListItem> GetAllBuses()
         {
             IEnumerable<SelectListItem> list = _context.Buses.Select(s => new SelectListItem
@@ -31,6 +32,7 @@ namespace BRASS.Controllers
         }
 
         public HomeController(SchoolContext context, IConfiguration iConfiguration)
+
         {
             _context = context;
             _iConfiguration = iConfiguration;
@@ -71,6 +73,7 @@ namespace BRASS.Controllers
                 model.ActiveDrivers = ActiveDrivers;
                 model.InactiveBuses = InactiveBuses;
                 model.InactiveDrivers = InactiveDrivers;
+
 
                 return View(model);
             }
