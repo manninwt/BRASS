@@ -176,6 +176,7 @@
                 displayRoute(points)
             });
             getRouteStops(function (points) {
+                view.center = points[0]
                 displayRouteStops(points)
             });
         }
