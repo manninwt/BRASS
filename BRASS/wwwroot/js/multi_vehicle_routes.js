@@ -1,5 +1,3 @@
-/// <reference path="create_bus_stops.js" />
-
 var access_token = "";
 var timeout = 1585715421022;
 
@@ -11,14 +9,14 @@ function getTime() {
 // Call with arguments controller(function(){ foo("Hello World!") })
 async function controller(func) {
     var token
-    token = await getToken();
+    token = await getTokenStatic();
     func()
 }
 
 // Call using a async function like controller
 // so the await can be used, otherwise the
 // token won't be ready by the time you make a call
-function getToken() {
+function getTokenStatic() {
 
     // Get creditiionals from going to either https://developers.arcgis.com/dashboard or https://developers.arcgis.com/applications and creating an application
     // Need to switch these out perferrable with a stored value for each user in appsettings.json, but for the project these can be manually changed
@@ -47,7 +45,6 @@ function getToken() {
             $.ajax(options).done(function (response) {
                 // returns the access token response - even if the call fails to connect
                 var msg = JSON.parse(response);
-                console.log(msg);
                 access_token = msg.access_token;
                 timeout = time + (msg.expires_in * 1000);
                 resolve(access_token)
@@ -134,6 +131,24 @@ function GetDriverValues() {
     });
 }
 
+function GetDriverRoute(x) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: "/Home/GetDriverRoute",
+            data: { "id": parseInt(x) },
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data, status, xhr) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                alert(err.Message);
+            }
+        })
+    });
+}
+
 function GetRoutePointsValues() {
     return new Promise(function (resolve, reject) {
         $.ajax({
@@ -165,7 +180,10 @@ function routeTimeFeature(name, longitude, lattitude, ServiceTime = 10){
             }
 }
 
-function routeFeature(name, longitude, lattitude){
+function routeFeature(name, longitude, lattitude) {
+    if (!isNaN(name)) {
+        name = name.toString(10)
+    }
     return {
                 "attributes": {
                     "Name": name
@@ -222,23 +240,16 @@ async function GetMultiRouteInfo() {
         }
     }
 
-    controller(function () { complexRouteAsync(info) })
+    ArcGisAPIController(complexRouteAsync, [info])
 }
 
 async function GetAddedStudentInfo() {
-    var info = {
-        "type": "features",
-        "features": []
-    }
     var stops = await GetAllStopValues();
     var routePoints = await GetRoutePointsValues();
     var school = await GetSchoolValues();
-    var drivers = await GetDriverValues();
-
-    info.features.push(routeFeature(school[0].schoolName, school[0].longitude, school[0].lattitude))
 
     var routes = {}
-    var addedStops = []
+    var addedStops = [], max = -Infinity, key;
     for (i = 0; i < stops.length; i++) {
         if (stops[i].longitude != 0 && stops[i].lattitude != 0) {
             if (stops[i].routeId == 0) {
@@ -265,19 +276,42 @@ async function GetAddedStudentInfo() {
             if (addedStops[j].minDist != 0 && addedStops[j].minDist > distance) {
                 addedStops[j].minDist = distance
                 addedStops[j].routeId = routePoints[i].routeId
-            } else if (addedStops[i].minDist == 0){
+            } else if (addedStops[j].minDist == 0){
                 addedStops[j].minDist = distance
                 addedStops[j].routeId = routePoints[i].routeId
             }
         }
     }
 
+
+    var info = {
+        "type": "features",
+        "features": []
+    }
+    var routeInfo = {};
+    var stopInfo = {};
     // Figures out where in the route each new stop will be
     for (i = 0; i < addedStops.length; i++) {
         addedStops[i].minDist = 0
         var routeId = addedStops[i].routeId
+
+        var driver = await GetDriverRoute(addedStops[i].routeId);
+
+        // create the routeInfo for route
+        var createNewRouteInfo = false;
+        if (!routeInfo[routeId]) {
+            createNewRouteInfo = true;
+            routeInfo[routeId] = info
+            stopInfo[routeId] = []
+            //routeInfo[routeId].features.push(routeFeature(driver.driverId, driver.longitude, driver.lattitude));
+        }
+        
+
         for (j = 1; j <= Object.keys(routes[routeId]).length; j++) {
-            console.log(routes[routeId])
+            if (createNewRouteInfo) {
+                routeInfo[routeId].features.push(routeFeature(routes[routeId][j].stopId, routes[routeId][j].longitude, routes[routeId][j].lattitude));
+                stopInfo[routeId].push(routes[routeId][j].stopId)
+            }
             var distance = Math.sqrt((addedStops[i].longitude - routes[routeId][j].longitude) ** 2 + (addedStops[i].lattitude - routes[routeId][j].lattitude) ** 2);
             if (addedStops[i].minDist != 0 && addedStops[i].minDist > distance) {
                 addedStops[i].minDist = distance
@@ -287,13 +321,35 @@ async function GetAddedStudentInfo() {
                 addedStops[i].stopNumber = j
             }
         }
+        if (createNewRouteInfo) {
+            routeInfo[routeId].features.push(routeFeature(school[0].schoolName, school[0].longitude, school[0].lattitude))
+        }
     }
+
+    // Add the new stops their corresponding route
+    while (addedStops.length > 0) {
+        addedStops.forEach(function (v, k) {
+            if (max < +v.stopNumber) {
+                max = +v.stopNumber;
+                key = k;
+            }
+        });
+        routeInfo[addedStops[key].routeId].features.splice((addedStops[key].stopNumber), 0, routeFeature(addedStops[key].stopId, addedStops[key].longitude, addedStops[key].lattitude))
+        stopInfo[routeId].splice((addedStops[key].stopNumber), 0, addedStops[key].stopId)
+        addedStops.splice(key, 1)
+        max = -Infinity
+    }
+
+    for (let infoKey in routeInfo) {
+        ArcGisAPIController(simpleRoute, [routeInfo[infoKey], stopInfo[infoKey]])
+    }
+    
 }
 
-// call using - controller(complexRouteAsync);
+// call using - ArcGisAPIController(complexRouteAsync, [info])
 // expsive call in arcgis credits, please be sure you have all the right data
-async function complexRouteAsync(info) {
-
+async function complexRouteAsync(token, info) {
+    access_token = token
     var options = {
         "url": "https://logistics.arcgis.com/arcgis/rest/services/World/VehicleRoutingProblem/GPServer/SolveVehicleRoutingProblem/submitJob",
         "method": "POST",
@@ -302,7 +358,7 @@ async function complexRouteAsync(info) {
             { 'content-type': 'application/x-www-form-urlencoded' },
         "data": {
             "f": "json",
-            "token": access_token,
+            "token": token,
             "populate_direction": "true",
             "uturn_policy": "NO_UTURNS",
             "depots": JSON.stringify(info.depots_info),
@@ -323,77 +379,8 @@ async function complexRouteAsync(info) {
         });
 }
 
-// call using - controller(simpleRoute);
-function simpleRoute() {
-    var stops = {
-        "type": "features",
-        "features": [
-            {
-                "geometry": {
-                    "x": -84.501,
-                    "y": 39.134
-                },
-                "attributes": {
-                    "Name": "Start Location"
-                }
-            },
-            {
-                "geometry": {
-                    "x": -84.502,
-                    "y": 39.131
-                },
-                "attributes": {
-                    "Name": "Stop 1"
-                }
-            },
-            {
-                "geometry": {
-                    "x": -84.507,
-                    "y": 39.128
-                },
-                "attributes": {
-                    "Name": "Stop 2"
-                }
-            },
-            {
-                "geometry": {
-                    "x": -84.516,
-                    "y": 39.126
-                },
-                "attributes": {
-                    "Name": "Stop 3"
-                }
-            },
-            {
-                "geometry": {
-                    "x": -84.521,
-                    "y": 39.126
-                },
-                "attributes": {
-                    "Name": "Stop 4"
-                }
-            },
-            {
-                "geometry": {
-                    "x": -84.528,
-                    "y": 39.130
-                },
-                "attributes": {
-                    "Name": "Stop 5"
-                }
-            },
-            {
-                "geometry": {
-                    "x": -84.524,
-                    "y": 39.145
-                },
-                "attributes": {
-                    "Name": "End"
-                }
-            }
-        ]
-    };
-
+// call using - ArcGisAPIController(simpleRoute, [stops])
+function simpleRoute(token, stops, stopInfo) {
     var options = {
         url: 'https://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World/solve',
         method: 'POST',
@@ -404,7 +391,7 @@ function simpleRoute() {
         },
         data: {
             f: 'json',
-            token: access_token,
+            token: token,
             populate_direction: 'true',
             uturn_policy: 'NO_UTURNS',
             stops: JSON.stringify(stops)
@@ -414,10 +401,27 @@ function simpleRoute() {
     $.post(options)
         .done(function (response) {
             console.log(response);
+
         })
         .fail(function (xhr, status, error) {
             console.log("Error in simpleRoute: " + error);
         });
+}
+
+function setRoutePoints() {
+    $.ajax({
+        url: "/Home/SetRouteInfo",
+        data: {},
+        type: 'GET',
+        contentType: 'application/json; charset=utf-8',
+        success: function (data, status, xhr) {
+            resolve(data);
+        },
+        error: function (xhr, status, error) {
+            var err = eval("(" + xhr.responseText + ")");
+            alert(err.Message);
+        }
+    })
 }
 
 

@@ -47,7 +47,6 @@ function getToken(creditials) {
             $.ajax(options).done(function (response) {
                 // returns the access token response - even if the call fails to connect
                 var msg = JSON.parse(response);
-                console.log(msg);
                 access_token = msg.access_token;
                 timeout = time + (msg.expires_in * 1000);
                 resolve(access_token)
@@ -68,7 +67,6 @@ function getCreditials() {
         type: 'GET',
         contentType: 'application/json; charset=utf-8',
         success: function (data, status, xhr) {
-            console.log(data)
             resolve(data)
         },
         error: function (xhr, status, error) {

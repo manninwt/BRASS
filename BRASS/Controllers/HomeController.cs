@@ -186,6 +186,24 @@ namespace BRASS.Controllers
             }
         }
 
+        public ActionResult GetDriverRoute(int id)
+        {
+            using (var context = _context)
+            {
+                var bus = context.Buses.AsNoTracking()
+                        .Where(x => x.RouteId == id)
+                        .ToList();
+
+                var driverId = bus.FirstOrDefault<Buses>().DriverId;
+
+                var driver = context.Drivers.AsNoTracking()
+                        .Where(x => x.DriverId == driverId)
+                        .ToList();
+
+                return Json(driver);
+            }
+        }
+
         public ActionResult GetBusValues()
         {
             using (var context = _context)
@@ -209,6 +227,16 @@ namespace BRASS.Controllers
                 var bus = context.RoutePoints.AsNoTracking().ToList();
 
                 return Json(bus);
+            }
+        }
+
+        public void SetRouteInfo()
+        {
+            using (var context = _context)
+            {
+                var bus = context.RoutePoints.AsNoTracking().ToList();
+
+                return;
             }
         }
 
