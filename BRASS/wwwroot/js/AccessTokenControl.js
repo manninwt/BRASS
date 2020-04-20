@@ -1,5 +1,5 @@
 ﻿var timeout = 1585715421022;
-var access_token = "";
+var access_token = ""
 
 function getTime() {
     return new Date().getTime();

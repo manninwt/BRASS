@@ -120,37 +120,37 @@ namespace BRASS.Controllers
             {
                 var routeStops = context.RouteStops.AsNoTracking().ToList();
 
-                Console.WriteLine(routeStops);
                 return Json(routeStops);
             }
         }
 
-        public ActionResult GetMultiRouteInfo()
+        public ActionResult GetSchoolValues()
         {
             using (var context = _context)
             {
-                var routeStops = context.RouteStops.AsNoTracking().ToList();
                 var school = context.School.AsNoTracking().ToList();
-                var drivers = context.Drivers.AsNoTracking().ToList();
-                var bus = context.Buses.AsNoTracking().ToList();
 
-                return Json(new MultiRouteInfo(Json(routeStops), Json(school), Json(drivers), Json(bus)));
+                return Json(school);
             }
         }
 
-        public class MultiRouteInfo
+        public ActionResult GetDriverValues()
         {
-            private JsonResult routeStops;
-            private JsonResult school;
-            private JsonResult drivers;
-            private JsonResult bus;
-
-            public MultiRouteInfo(JsonResult routeStops, JsonResult school, JsonResult drivers, JsonResult bus)
+            using (var context = _context)
             {
-                this.routeStops = routeStops;
-                this.school = school;
-                this.drivers = drivers;
-                this.bus = bus;
+                var drivers = context.Drivers.AsNoTracking().ToList();
+
+                return Json(drivers);
+            }
+        }
+
+        public ActionResult GetBusValues()
+        {
+            using (var context = _context)
+            {
+                var bus = context.Buses.AsNoTracking().ToList();
+
+                return Json(bus);
             }
         }
 

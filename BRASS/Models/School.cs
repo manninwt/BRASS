@@ -15,8 +15,8 @@ namespace BRASS.Models
         public decimal Longitude { get; set; }
         public decimal Lattitude { get; set; }
         public int NumbBuses { get; set; }
-        public DateTime ArrivalTime { get; set; }
-        public DateTime DepartureTime { get; set; }
+        public TimeSpan ArrivalTime { get; set; }
+        public TimeSpan DepartureTime { get; set; }
         public char RouteGroup { get; set; }
     }
 }
