@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BRASS.Models.Buses>
+﻿@model IEnumerable<BRASS.Models.PageModels.BusPage>
 
 @{
     ViewData["Title"] = "Index";
@@ -30,7 +30,7 @@
                                 <td>@Html.DisplayFor(modelItem => item.Capacity)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Condition)</td>
                                 <td>@Html.DisplayFor(modelItem => item.RouteId)</td>
-                                <td>@Html.DisplayFor(modelItem => item.DriverId)</td>
+                                <td>@Html.DisplayFor(modelItem => item.DriverName)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Handicap)</td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.BusId">Edit</a> |

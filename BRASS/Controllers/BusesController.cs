@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BRASS.DataAccessLayer;
 using BRASS.Models;
+using BRASS.Models.PageModels;
 
 namespace BRASS.Controllers
 {
@@ -22,7 +23,37 @@ namespace BRASS.Controllers
         // GET: Buses
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Buses.ToListAsync());
+            using (var context = _context)
+            {
+                List<BusPage> busList = new List<BusPage>();
+                var busQuery = context.Buses.AsNoTracking().ToList();
+
+                foreach (var bus in busQuery)
+                {
+
+                    var driverFirstName = context.Drivers.AsNoTracking()
+                        .Where(x => x.DriverId == bus.DriverId)
+                        .Select(x => x.FirstName)
+                        .FirstOrDefault();
+
+                    var driverLastName = context.Drivers.AsNoTracking()
+                        .Where(x => x.DriverId == bus.DriverId)
+                        .Select(x => x.LastName)
+                        .FirstOrDefault();
+
+                    var model = new BusPage();
+                    model.BusId = bus.BusId;
+                    model.BusNumb = bus.BusNumb;
+                    model.Capacity = bus.Capacity;
+                    model.Condition = bus.Condition;
+                    model.DriverName = driverFirstName + " " + driverLastName;
+                    model.Handicap = bus.Handicap;
+                    model.RouteId = bus.RouteId;
+                    busList.Add(model);
+                }
+
+                return View(busList);
+            }
         }
 
         // GET: Buses/Details/5
