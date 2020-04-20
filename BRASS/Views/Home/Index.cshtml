@@ -133,26 +133,19 @@
       });
       
       // click map to display route
+      // click map to display route
       view.on("click", function(event){
-        // var routeStops = getRouteStops(busID);
-        // var routePoints = getRoutePoints(busID);
-        var routeStops = [[-84.501, 39.134],
-                          [-84.502, 39.131],
-                          [-84.507, 39.128],
-                          [-84.516, 39.126],
-                          [-84.521, 39.126],
-                          [-84.528, 39.130],
-                          [-84.524, 39.145]];
-        var routePoints = [[-84.501, 39.134],
-                          [-84.502, 39.131],
-                          [-84.507, 39.128],
-                          [-84.516, 39.126],
-                          [-84.521, 39.126],
-                          [-84.528, 39.130],
-                          [-84.524, 39.145]];
-        displayRouteStops(routeStops);
-        displayRoute(routePoints);
+        drawRoute()
       });
+      
+      function drawRoute(){
+        getRoutePoints(function(points){
+            displayRoute(points)
+        });
+        getRouteStops(function(points){
+            displayRouteStops(points)
+        });
+      }
 
       // define graphics for point
       function addGraphicPoint(type, point) {
@@ -181,36 +174,47 @@
       }
       
         // get route stops from database based on busid
-        function getRouteStops(busId){
-          // query routeID from Routes table based on busID
-          // query 2D Array of stops with longitude and latitude from RouteStops table based on routeID and store in routeStops
-          // return route stops
+        function getRouteStops(callback){
+            var x = $("#BusDropdown").val();
+            var routeStopsArray = [];
+            $.ajax({
+                url: "/Home/GetSelectedValueStop",
+                data: { "id": parseInt(x) },
+                type: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data, status, xhr) {
+                    for(let i = 0; i < data.length; i ++){
+                        routeStopsArray.push([data[i].longitude, data[i].lattitude]);
+                    }
+                    callback(routeStopsArray)
+                },
+                error: function (xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
+                    alert(err.Message);
+                }
+            });
         }
         
         // get route stops from database based on busid
-        function getRoutePoints() {
-        //    var x = $("#BusDropdown").val();
-        //    var routePointsArray = [];
-        //    $.ajax({
-        //        url: "/Home/GetSelectedValue",
-        //        data: { "id": parseInt(x) },
-        //        type: 'GET',
-        //        contentType: 'application/json; charset=utf-8',
-        //        success: function (data, status, xhr) {
-        //            for (var i in data) {
-        //                routePointsArry.append([data[i].longitude, data[i].lattitude])
-        //                console.log(i + "Longitude: " + data[i].longitude + ", Lattitude: " + data[i].lattitude + ", RouteId: " + data[i].routeId)
-        //            }
-        //            return callback.(routePointsArray)
-        //        },
-        //        error: function (xhr, status, error) {
-        //            var err = eval("(" + xhr.responseText + ")");
-        //            alert(err.Message);
-        //        }
-        //    });
-          // query routeID from Routes table based on busID
-          // query 2D Array of points with longitude and latitude from RoutePoints table based on routeID and store in routePonts
-          // return route points
+        function getRoutePoints(callback){
+            var x = $("#BusDropdown").val();
+            var routePointsArray = [];
+            $.ajax({
+                url: "/Home/GetSelectedValue",
+                data: { "id": parseInt(x) },
+                type: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data, status, xhr) {
+                    for(let i = 0; i < data.length; i ++){
+                        routePointsArray.push([data[i].longitude, data[i].lattitude]);
+                    }
+                    callback(routePointsArray)
+                },
+                error: function (xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
+                    alert(err.Message);
+                }
+            });
         }
         
         // display stops based on an input of 2D array containing long/lat for each stop 
@@ -245,33 +249,9 @@
           }
         }
 
-      /*function getRoute() {
-        // Setup the route parameters hi
-        var routeParams = new RouteParameters({
-          stops: new FeatureSet({
-            features: view.graphics.toArray() // Pass the array of graphics
-          }),
-          returnDirections: true
-        });
-        // Get the route
-        routeTask.solve(routeParams).then(showRoute);
-      }
-      
-        // Adds the solved route to the map as a graphic
-        function showRoute(data) {
-          // Display the route
-          
-          data.routeResults.forEach(function(result) {
-            result.route.symbol = {
-              type: "simple-line",
-              color: [5, 150, 255],
-              width: 3
-            };
-            view.graphics.add(result.route);
-          });
-        }*/
+
         
-       
+     
        view.ui.add(legend, "top-right");
        view.ui.add(scalebar, "bottom-left");
        view.ui.add(coordsWidget, "bottom-right");

@@ -62,7 +62,7 @@ namespace BRASS.DataAccessLayer
                         var schools = new School[]
                         {
                     new School{SchoolName="Benjamin Logan Highschool",SchoolAddress="2424 County Road 47",SchoolCity="Bellefontaine",SchoolZipCode="43311",
-                        NumbBuses=59,ArrivalTime=new DateTime(2020,5,20,7,45,0),DepartureTime=new DateTime(2020,5,20,15,15,0),RouteGroup ='A',}
+                        NumbBuses=59,ArrivalTime=new TimeSpan(7,45,0),DepartureTime=new TimeSpan(15,15,0),RouteGroup ='A',}
                         };
 
                         foreach (School s in schools)

@@ -116,6 +116,44 @@ namespace BRASS.Controllers
                 }
             }
         }
+        
+        public ActionResult GetSelectedValueStop(int id)
+        {
+            if (id == 0)
+            {
+                using (var context = _context)
+                {
+
+                    var routeQuery = context.Routes.AsNoTracking().ToList();
+
+                    var routeId = routeQuery.FirstOrDefault<Routes>().RouteId;
+
+                    var routeStopsList = context.RouteStops.AsNoTracking()
+                        .Where(x => x.RouteId == routeId)
+                        .ToList();
+
+                    return Json(routeStopsList);
+                }
+            }
+            else
+            {
+                using (var context = _context)
+                {
+
+                    var routeQuery = context.Routes.AsNoTracking()
+                        .Where(x => x.BusId == id)
+                        .ToList();
+
+                    var routeId = routeQuery.FirstOrDefault<Routes>().RouteId;
+
+                    var routeStopsList = context.RouteStops.AsNoTracking()
+                        .Where(x => x.RouteId == routeId)
+                        .ToList();
+
+                    return Json(routeStopsList);
+                }
+            }
+        }
 
         public ActionResult GetAllStopValues()
         {
