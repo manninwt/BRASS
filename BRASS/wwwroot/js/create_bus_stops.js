@@ -6,7 +6,7 @@
     //Remove points from the list until they are all associated with a stop
     while (points.length > 0) {
 
-        point = points[o];
+        point = points[0];
         var nonclustered = true;
 
         //If there are existing stops, see if the stop fits into any
@@ -51,4 +51,5 @@
             points.shift();
         }
     }
+    console.log(busStops);
 }

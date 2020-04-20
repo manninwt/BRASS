@@ -1,3 +1,5 @@
+/// <reference path="create_bus_stops.js" />
+
 var access_token = "";
 var timeout = 1585715421022;
 
@@ -59,113 +61,159 @@ function getToken() {
     }
 };
 
+
+function GetAllStopValues() {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: "/Home/GetAllStopValues",
+            data: {},
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data, status, xhr) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                alert(err.Message);
+            }
+        })
+    });
+}
+
+function GetSchoolValues() {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: "/Home/GetSchoolValues",
+            data: {},
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data, status, xhr) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                alert(err.Message);
+            }
+        })
+    });
+}
+
+function GetBusValues() {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: "/Home/GetBusValues",
+            data: {},
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data, status, xhr) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                alert(err.Message);
+            }
+        })
+    });
+}
+
+function GetDriverValues() {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: "/Home/GetDriverValues",
+            data: {},
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data, status, xhr) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                alert(err.Message);
+            }
+        })
+    });
+}
+
+function routeTimeFeature(name, longitude, lattitude, ServiceTime = 10){
+    return {
+                "attributes": {
+                    "Name": name,
+                    "ServiceTime": ServiceTime
+                },
+                "geometry": {
+                    "x": longitude,
+                    "y": lattitude
+                }
+            }
+}
+
+function routeFeature(name, longitude, lattitude){
+    return {
+                "attributes": {
+                    "Name": name
+                },
+                "geometry": {
+                    "x": longitude,
+                    "y": lattitude
+                }
+            }
+}
+
+async function GetMultiRouteInfo() {
+    var info = {
+        depots_info: {
+            "type": "features",
+            "features": []
+        },
+        route_info: {
+            "features": []
+        },
+        order_info: {
+            "type": "features",
+            "features": []
+        }
+    }
+    var stops = await GetAllStopValues();
+    var school = await GetSchoolValues();
+    var busses = await GetBusValues();
+    var drivers = await GetDriverValues();
+
+    console.log(stops);
+    console.log(school);
+    console.log(busses);
+    console.log(drivers);
+
+    var schoold_depot_name = school[0].schoolName;
+    info.depots_info.features.push(routeFeature(schoold_depot_name, school[0].longitude, school[0].lattitude))
+    for (i = 0; i < drivers.length; i++) {
+        if (drivers[i].condition == "ACTIVE") {
+            var driver_depot_name = drivers[i].driverId;
+            
+            info.route_info.features.push({
+                "attributes": {
+                    "Name": "Route " + i,
+                    "Description": "vehicle " + i,
+                    "StartDepotName": driver_depot_name,
+                    "EndDepotName": schoold_depot_name,
+                    "Capacities": "30",
+                    "MaxOrderCount": 30,
+                    "MaxTotalTime": 60,
+                }
+            })
+            info.depots_info.features.push(routeFeature(driver_depot_name, drivers[i].longitude, drivers[i].lattitude))
+        }
+    }
+    for (i = 0; i < stops.length; i++) {
+        info.order_info.features.push(routeTimeFeature("Stop " + stops[i].stopNumber, stops[i].longitude, stops[i].lattitude, 10))
+    }
+
+    console.log(info);
+}
+
 // call using - controller(complexRouteAsync);
 // expsive call in arcgis credits, please be sure you have all the right data
-function complexRouteAsync() {
-    var depots_info = {
-        "type": "features",
-        "features": [{
-            "attributes": {
-                "Name": "Bay Cities Kitchens & Appliances"
-            },
-            "geometry": {
-                "x": -118.469630,
-                "y": 34.037555
-            }
-        }]
-    };
-
-    var route_info = {
-        "features": [{
-            "attributes": {
-                "Name": "Route 1",
-                "Description": "vehicle 1",
-                "StartDepotName": "Bay Cities Kitchens & Appliances",
-                "EndDepotName": "Bay Cities Kitchens & Appliances",
-                "Capacities": "4",
-                "MaxOrderCount": 3,
-                "MaxTotalTime": 60,
-            }
-        }
-            ,
-        {
-            "attributes": {
-                "Name": "Route 2",
-                "Description": "vehicle 2",
-                "StartDepotName": "Bay Cities Kitchens & Appliances",
-                "EndDepotName": "Bay Cities Kitchens & Appliances",
-                "Capacities": "4",
-                "MaxOrderCount": 3,
-                "MaxTotalTime": 60,
-            }
-        }
-        ]
-    };
-
-    var order_info = {
-        "type": "features",
-        "features": [{
-            "attributes": {
-                "Name": "Father's Office",
-                "ServiceTime": 10
-            },
-            "geometry": {
-                "x": -118.498406,
-                "y": 34.029445
-            }
-        },
-        {
-            "attributes": {
-                "Name": "R+D Kitchen",
-                "ServiceTime": 10
-            },
-            "geometry": {
-                "x": -118.495788,
-                "y": 34.032339
-            }
-        },
-        {
-            "attributes": {
-                "Name": "Pono Burger",
-                "ServiceTime": 10
-            },
-            "geometry": {
-                "x": -118.489469,
-                "y": 34.019000
-            }
-        },
-        {
-            "attributes": {
-                "Name": "Il Ristorante di Giorgio Baldi",
-                "ServiceTime": 10
-            },
-            "geometry": {
-                "x": -118.518787,
-                "y": 34.028508
-            }
-        },
-        {
-            "attributes": {
-                "Name": "Milo + Olive",
-                "ServiceTime": 10
-            },
-            "geometry": {
-                "x": -118.476026,
-                "y": 34.037572
-            }
-        },
-        {
-            "attributes": {
-                "Name": "Dialogue",
-                "ServiceTime": 10
-            },
-            "geometry": {
-                "x": -118.495814,
-                "y": 34.017042
-            }
-        }
-        ]
-    };
+async function complexRouteAsync() {
+    var info = GetMultiRouteInfo();
 
     var options = {
         "url": "https://logistics.arcgis.com/arcgis/rest/services/World/VehicleRoutingProblem/GPServer/SolveVehicleRoutingProblem/submitJob",
@@ -178,9 +226,9 @@ function complexRouteAsync() {
             "token": access_token,
             "populate_direction": "true",
             "uturn_policy": "NO_UTURNS",
-            "depots": JSON.stringify(depots_info),
-            "routes": JSON.stringify(route_info),
-            "orders": JSON.stringify(order_info),
+            "depots": JSON.stringify(info.depots_info),
+            "routes": JSON.stringify(info.route_info),
+            "orders": JSON.stringify(info.order_info),
             "default_date": "1585715421022",
             "expires_in": "7200"
         }

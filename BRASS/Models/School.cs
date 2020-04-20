@@ -12,11 +12,11 @@ namespace BRASS.Models
         public string SchoolAddress { get; set; }
         public string SchoolCity { get; set; }
         public string SchoolZipCode { get; set; }
-        public double Longitude { get; set; }
-        public double Lattitude { get; set; }
+        public decimal Longitude { get; set; }
+        public decimal Lattitude { get; set; }
         public int NumbBuses { get; set; }
-        public DateTime ArrivalTime { get; set; }
-        public DateTime DepartureTime { get; set; }
+        public TimeSpan ArrivalTime { get; set; }
+        public TimeSpan DepartureTime { get; set; }
         public char RouteGroup { get; set; }
     }
 }
