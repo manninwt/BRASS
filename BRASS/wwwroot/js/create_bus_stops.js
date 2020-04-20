@@ -12,16 +12,16 @@
         //If there are existing stops, see if the stop fits into any
         if (busStops.length > 0) {
 
-            for (b in busStops) {
+            for (b of busStops) {
 
                 //Iterate through cluster to determine a center point
                 //NOTE: 100000 IS A DUMB HIGH VALUE SO THAT IT WILL ALWAYS BE REPLACED AS A CLOSEST DISTANCE, CHANGE IF NEED BE
                 var centerP = [];
                 var closestD = 100000;
-                for (x in b) {
+                for (x of b) {
                     //Find the lowest sum of all distances from each point to see which fits best as the center
                     var d = 0;
-                    for (y in b) {
+                    for (y of b) {
                         d += Math.sqrt((y[0] - x[0]) * (y[0] - x[0]) + (y[1] - x[1]) * (y[1] - x[1]));
                     }
                     if (d < closestD) {
