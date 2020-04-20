@@ -51,6 +51,9 @@
                 <span asp-validation-for="ZipCode" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <input value="Convert Data" onclick="AddressToGeo(this.streetAddress, this.city, this.zipCode)"cclass="btn btn-default" />
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
         </form>
@@ -64,3 +67,33 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script>
+    function AddressToGeo(token, streetAddress, city, zipCode) {
+        var address = streetAddress + " " + city + " " + zipCode;
+
+        var options = {
+            "url": "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates",
+            "method": "GET",
+            "timeout": 0,
+            "headers":
+                { 'content-type': 'application/x-www-form-urlencoded' },
+            "data": {
+                "f": "json",
+                "token": token,
+                "singleLine": address
+            }
+        };
+
+        $.ajax(options)
+            .done(function (response) {
+                // location is define as {x,y}
+                location = response.location;
+                console.log(response);
+                // ToDo: needs call to database to set stop
+            })
+            .fail(function (xhr, status, error) {
+                console.log("Error in AddressToGeo: " + error);
+            });
+    }
+</script>
