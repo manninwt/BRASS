@@ -84,9 +84,19 @@ namespace BRASS.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(students);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                int studentStopId = 0;
+                using (var context = _context)
+                {
+                    RouteStops studentStop = new RouteStops();
+                    context.Add(studentStop);
+                    context.Add(students);
+                    context.SaveChanges();
+                    studentStopId = studentStop.StopId;
+                    await context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+
+                //Need to figure out a way to assign the studentStopId to the newly created routeStops object
             }
             return View(students);
         }
@@ -112,7 +122,7 @@ namespace BRASS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StudentId,FirstName,LastName,ParentFirstName,ParentLastName,ParentPhoneNumber,StreetAddress,City,ZipCode,StopId")] Students students)
+        public async Task<IActionResult> Edit(int id, [Bind("StudentId,FirstName,LastName,ParentFirstName,ParentLastName,ParentPhoneNumber,StreetAddress,City,ZipCode")] Students students)
         {
             if (id != students.StudentId)
             {
