@@ -240,7 +240,7 @@ namespace BRASS.Controllers
             }
         }
 
-        public void SetRouteInfo(int longitude, int lattitude, int routeId)
+        public void SetRouteInfo(decimal longitude, decimal lattitude, int routeId)
         {
             using (var context = _context)
             {
