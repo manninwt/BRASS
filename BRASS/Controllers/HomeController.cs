@@ -39,17 +39,41 @@ namespace BRASS.Controllers
         // GET: Buses
         public async Task<IActionResult> Index()
         {
-            var busNumbers = _context.Buses.Select(x => new { Text = "Bus Number " + x.BusNumb.ToString(), Value = x.BusId });
-
-            var model = new HomePage();
-            List<SelectListItem> homePage = new List<SelectListItem>();
-            foreach (var busNumber in busNumbers)
+            using (var context = _context)
             {
-                homePage.Add(new SelectListItem { Text = busNumber.Value.ToString(), Value = busNumber.Text });
-            }
-            model.BusNumberList = new SelectList(homePage, "Text", "Value");
+                var busNumbers = context.Buses.Select(x => new { Text = "Bus Number " + x.BusNumb.ToString(), Value = x.BusId });
 
-            return View(model);
+                var model = new HomePage();
+                List<SelectListItem> homePage = new List<SelectListItem>();
+                foreach (var busNumber in busNumbers)
+                {
+                    homePage.Add(new SelectListItem { Text = busNumber.Value.ToString(), Value = busNumber.Text });
+                }
+                model.BusNumberList = new SelectList(homePage, "Text", "Value");
+
+                var ActiveBuses = context.Buses.AsNoTracking()
+                    .Where(x => x.Condition == "FUNCTIONAL")
+                    .Count();
+
+                var InactiveBuses = context.Buses.AsNoTracking()
+                    .Where(x => x.Condition == "NOT FUNCTIONAL")
+                    .Count();
+
+                var ActiveDrivers = context.Drivers.AsNoTracking()
+                    .Where(x => x.Condition == "ACTIVE")
+                    .Count();
+
+                var InactiveDrivers = context.Drivers.AsNoTracking()
+                    .Where(x => x.Condition == "INACTIVE")
+                    .Count();
+
+                model.ActiveBuses = ActiveBuses;
+                model.ActiveDrivers = ActiveDrivers;
+                model.InactiveBuses = InactiveBuses;
+                model.InactiveDrivers = InactiveDrivers;
+
+                return View(model);
+            }
         }
 
         public ActionResult GetSelectedValue(int id)
