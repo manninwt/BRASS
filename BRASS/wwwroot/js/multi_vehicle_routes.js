@@ -408,7 +408,7 @@ function simpleRoute(token, stops, stopInfo, routeId) {
         });
 }
 
-async function setAddedRouteValues(routePaths, stopInfom routeId) {
+async function setAddedRouteValues(routePaths, stopInfo, routeId) {
     await removeRoutePointsForRoute(routeId)
     for (i = 0; i < stopInfo.length; i++) {
         SetStopInfo(stopInfo[i], i + 1, routeId)
