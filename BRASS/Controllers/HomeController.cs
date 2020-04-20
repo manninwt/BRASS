@@ -10,6 +10,7 @@ using BRASS.Models;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.IO;
+using BRASS.Models.PageModels;
 
 namespace BRASS.Controllers
 {
@@ -55,19 +56,19 @@ namespace BRASS.Controllers
 
                 var ActiveBuses = context.Buses.AsNoTracking()
                     .Where(x => x.Condition == "FUNCTIONAL")
-                    .Count();
+                    .ToList();
 
                 var InactiveBuses = context.Buses.AsNoTracking()
                     .Where(x => x.Condition == "NOT FUNCTIONAL")
-                    .Count();
+                    .ToList();
 
                 var ActiveDrivers = context.Drivers.AsNoTracking()
                     .Where(x => x.Condition == "ACTIVE")
-                    .Count();
+                    .ToList();
 
                 var InactiveDrivers = context.Drivers.AsNoTracking()
                     .Where(x => x.Condition == "INACTIVE")
-                    .Count();
+                    .ToList();
 
                 model.ActiveBuses = ActiveBuses;
                 model.ActiveDrivers = ActiveDrivers;
@@ -212,6 +213,40 @@ namespace BRASS.Controllers
                 this.client_id = _iConfiguration["AccessTokenInfo:client_id"];
                 this.client_secret = _iConfiguration["AccessTokenInfo:client_secret"];
                 this.grant_type = _iConfiguration["AccessTokenInfo:grant_type"];
+            }
+        }
+
+        public ActionResult GetRouteInfo(int id)
+        {
+            using (var context = _context)
+            {
+                var routeId = context.Routes.AsNoTracking()
+                    .Where(x => x.BusId == id)
+                    .Select(x => x.RouteId)
+                    .FirstOrDefault();
+
+                var driverId = context.Buses.AsNoTracking()
+                    .Where(x => x.RouteId == routeId)
+                    .Select(x => x.DriverId)
+                    .FirstOrDefault();
+
+                var driver = context.Drivers.AsNoTracking()
+                    .Where(x => x.DriverId == driverId)
+                    .FirstOrDefault();
+
+                var bus = context.Buses.AsNoTracking()
+                    .Where(x => x.RouteId == routeId)
+                    .FirstOrDefault();
+
+                HomePageBusInfoTable tableData = new HomePageBusInfoTable();
+                tableData.DriverName = driver.FirstName + " " + driver.LastName;
+                tableData.Handicap = bus.Handicap;
+                tableData.Status = bus.Condition;
+                tableData.RouteNumber = routeId;
+                tableData.NumberOfStudents = 30;
+                tableData.BusNumber = bus.BusNumb;
+
+                return Json(tableData);
             }
         }
     }

@@ -14,27 +14,53 @@
 <div clas="container">
     <div class="row" style="min-height:80vh">
     <div class="col-lg-6" id="viewDiv" style="border:medium;position:relative;height: 90vh;width: 80vw;margin: 0;padding: 0"></div>
-        <div class="col-lg-6">
-            @*<div class="row" style="justify-content:center">*@
+        <div class="col-lg-6" style="margin-top:10%">
                 <div class="col-lg-12">
-                    <div class="form-group col-lg-6">
-                        <label for="BusDropdown">Select A Bus</label>
-                        @Html.DropDownListFor(m => m.BusNumb, Model.BusNumberList, "All Buses", new { @id = "BusDropdown", @onchange = "GetRoutePoints()" })
+                    <div class="form-group col-lg-12" style="display:flex;justify-content:center">
+                        <label for="BusDropdown" style="margin:0 1rem">Select A Bus:</label>
+                        @Html.DropDownListFor(m => m.BusNumb, Model.BusNumberList, "--- Select ---", new { @id = "BusDropdown", @onchange = "GetRouteInfo()" })
                     </div>
                 </div>
-                <div class="row" style="justify-content:center;margin-top:10%">
-                    <div class="col-lg-12" id="BusData">
-                        <h3>Active Buses:</h3>
-                        <h3>@Html.DisplayFor(model => model.ActiveBuses)</h3>
-                        <h3>Inactive Buses:</h3>
-                        <h3>@Html.DisplayFor(model => model.InactiveBuses)</h3>
-                        <h3>Active Drivers:</h3>
-                        <h3>@Html.DisplayFor(model => model.ActiveDrivers)</h3>
-                        <h3>Inactive Drivers</h3>
-                        <h3>@Html.DisplayFor(model => model.InactiveDrivers)</h3>
+                <div class="row col-lg-9" id="BusData" style="margin:auto;border:solid;justify-content:center;padding:0px">
+                    <div class="row col-lg-12" style="outline-style:solid;justify-content:center"><h2>All Buses:</h2></div>
+                    <div class="row col-lg-12" style="margin-top:10px"><h4>Active Buses:</h4></div>
+                    <div class="row col-lg-12" style="margin-left:5%">
+                        @foreach (Buses bus in Model.ActiveBuses)
+                        {
+                            <div class="row col-lg-8">
+                                <h5>Bus Number: @Html.DisplayFor(model => bus.BusNumb)</h5>
+                            </div>
+                        }
                     </div>
+                    <div class="row col-lg-12" style="margin-top:10px"><h4>Inactive Buses:</h4></div>
+                    <div class="row col-lg-12" style="margin-left:5%">
+                        @foreach (Buses bus in Model.InactiveBuses)
+                        {
+                            <div class="row col-lg-8">
+                                <h5>Bus Number: @Html.DisplayFor(model => bus.BusNumb)</h5>
+                            </div>
+                        }
+                    </div>
+                    <div class="row col-lg-12" style="margin-top:10px"><h4>Active Drivers:</h4></div>
+                    <div class="row col-lg-12" style=" margin-left:5%"">
+                        @foreach (Drivers driver in Model.ActiveDrivers)
+                        {
+                            <div class="row col-lg-8">
+                                <h5>@Html.DisplayFor(model => driver.FirstName) @Html.DisplayFor(model => driver.LastName)</h5>
+                            </div>
+                        }
+                    </div>
+                    <div class="row col-lg-12" style="margin-top:10px"><h4>Inactive Drivers:</h4></div>
+                    <div class="row col-lg-12" style="margin-left:5%">
+                        @foreach (Drivers driver in Model.InactiveDrivers)
+                        {
+                            <div class="row col-lg-8">
+                                <h5>@Html.DisplayFor(model => driver.FirstName) @Html.DisplayFor(model => driver.LastName)</h5>
+                            </div>
+                        }
+                    </div>
+
                 </div>
-            @*</div>*@
         </div>
     </div>
 </div>
@@ -46,18 +72,25 @@
 </style>
 <script>
 
-    function GetRoutePoints() {
+    function GetRouteInfo() {
         var x = $("#BusDropdown").val();
         console.log(x)
         $.ajax({
-            url: "/Home/GetSelectedValue",
+            url: "/Home/GetRouteInfo",
             data: { "id": parseInt(x) },
             type: 'GET',
             contentType: 'application/json; charset=utf-8',
             success: function (data, status, xhr) {
-                for (let i = 0; i < data.length; i++) {
-                    console.log(i + "Longitude: " + data[i].longitude + ", Lattitude: " + data[i].lattitude + ", RouteId: " + data[i].routeId )
-                }
+                console.log(data);
+                var busData = '';
+                busData += "<div class=\"row col-lg-12\" style=\"outline-style:solid;justify-content:center\"><h2>Bus: " + data.busNumber + "</h2></div>";
+                busData += "<div class=\"row col-lg-12\" style=\"margin-top:10px\"><h4>Assigned Route: " + data.routeNumber + "</h4></div>";
+                busData += "<div class=\"row col-lg-12\" style=\"margin-top:10px\"><h4>Driver Name: " + data.driverName + "</h4></div>";
+                busData += "<div class=\"row col-lg-12\" style=\"margin-top:10px\"><h4>Number of Students: " + data.numberOfStudents + "</h4></div>";
+                busData += "<div class=\"row col-lg-12\" style=\"margin-top:10px\"><h4>Status: " + data.status + "</h4></div>";
+                busData += "<div class=\"row col-lg-12\" style=\"margin-top:10px\"><h4>Handicap Accessible: " + data.handicap + "</h4></div>";
+
+                $("#BusData").html(busData);
             },
             error: function (xhr, status, error) {
                 var err = eval("(" + xhr.responseText + ")");

@@ -10,6 +10,7 @@ namespace BRASS.Models
         public int DriverId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string DriverPhoneNumber { get; set; }
         public string Condition { get; set; }
         public string StartAddress { get; set; }
         public string StartCity { get; set; }

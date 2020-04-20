@@ -23,10 +23,10 @@ namespace BRASS.Models
         public SelectList BusNumberList { get; set; }
         public List<Buses> BusList { get; set; }
         public List<RoutePoints> RoutePoints { get; set; }
-        public int ActiveBuses { get; set; }
-        public int InactiveBuses { get; set; }
-        public int ActiveDrivers { get; set; }
-        public int InactiveDrivers { get; set; }
+        public List<Buses> ActiveBuses { get; set; }
+        public List<Buses> InactiveBuses { get; set; }
+        public List<Drivers> ActiveDrivers { get; set; }
+        public List<Drivers> InactiveDrivers { get; set; }
 
     }
 }

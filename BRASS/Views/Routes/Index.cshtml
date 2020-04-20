@@ -27,6 +27,7 @@
                         @foreach (var item in Model.StudentList)
                         {
                             var busId = 0;
+                            var stopNumber = 0;
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</td>
                             <td>@Html.DisplayFor(modelItem => item.StreetAddress)</td>
@@ -34,7 +35,7 @@
                             {
                                 if (stop.StopId == item.StopId)
                                 {
-                                    <td>@Html.DisplayFor(modelItem => stop.StopNumber)</td>
+                                    stopNumber = stop.StopNumber;
                                 }
                                 @foreach (var route in Model.RoutesList)
                                 {
@@ -44,7 +45,25 @@
                                     }
                                 }
                             }
-                            <td>@Html.DisplayFor(modelItem => busId)</td>
+                            @if (stopNumber == 0)
+                            {
+                                <td>Unassigned</td>
+                            }
+                            else
+                            {
+                                <td>@Html.DisplayFor(modelItem => stopNumber)</td>
+                            }
+
+                            @if (busId == 0)
+                            {
+                                <td>"nassigned</td>
+                            }
+                            else
+                            {
+                                <td>@Html.DisplayFor(modelItem => busId)</td>
+                            }
+
+
                             <td>
                                 <a asp-action="Edit" asp-route-id="@item.StudentId">Edit</a> |
                                 <a asp-action="Details" asp-route-id="@item.StudentId">Details</a> |

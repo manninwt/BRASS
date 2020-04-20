@@ -97,11 +97,11 @@ namespace BRASS.DataAccessLayer
                     {
                         var drivers = new Drivers[]
                         {
-                    new Drivers{FirstName="Timon",LastName="Mannings",Condition="INACTIVE",StartAddress="9353 County Road 101",StartCity="Belle Center",
+                    new Drivers{FirstName="Timon",LastName="Mannings",DriverPhoneNumber="9374417525",Condition="INACTIVE",StartAddress="9353 County Road 101",StartCity="Belle Center",
                         StartZipCode ="43310"},
-                    new Drivers{FirstName="Nathan",LastName="Boehringer",Condition="ACTIVE",StartAddress="9353 County Road 101",StartCity="Belle Center",
+                    new Drivers{FirstName="Nathan",LastName="Boehringer",DriverPhoneNumber="5562548734",Condition="ACTIVE",StartAddress="9353 County Road 101",StartCity="Belle Center",
                         StartZipCode ="43310"},
-                    new Drivers{FirstName="Bryan",LastName="Huddleston",Condition="ACTIVE",StartAddress="9353 County Road 101",StartCity="Belle Center",
+                    new Drivers{FirstName="Bryan",LastName="Huddleston",DriverPhoneNumber="5562538313",Condition="ACTIVE",StartAddress="9353 County Road 101",StartCity="Belle Center",
                         StartZipCode ="43310"}
                         };
 
