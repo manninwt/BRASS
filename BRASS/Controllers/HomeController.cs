@@ -244,7 +244,13 @@ namespace BRASS.Controllers
         {
             using (var context = _context)
             {
-                var bus = context.RoutePoints.AsNoTracking().ToList();
+                RoutePoints newPoint = new RoutePoints();
+                newPoint.RouteId = routeId;
+                newPoint.Longitude = longitude;
+                newPoint.Lattitude = lattitude;
+
+                context.Add(newPoint);
+                context.SaveChanges();
 
                 return;
             }
