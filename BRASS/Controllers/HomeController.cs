@@ -266,6 +266,8 @@ namespace BRASS.Controllers
                 RouteStops updateStop = new RouteStops();
                 updateStop.StopId = stop.StopId;
                 updateStop.StopNumber = stopNumber;
+                updateStop.Longitude = stop.Longitude;
+                updateStop.Lattitude = stop.Lattitude;
                 updateStop.RouteId = routeId;
 
                 context.Update(updateStop);
