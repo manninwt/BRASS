@@ -409,7 +409,7 @@ function simpleRoute(token, stops, stopInfo, routeId) {
 }
 
 async function setAddedRouteValues(routePaths, stopInfo, routeId) {
-    await removeRoutePointsForRoute(routeId)
+    //await removeRoutePointsForRoute(routeId)
     for (i = 0; i < stopInfo.length; i++) {
         SetStopInfo(stopInfo[i], i + 1, routeId)
     }
@@ -417,7 +417,7 @@ async function setAddedRouteValues(routePaths, stopInfo, routeId) {
         for (j = 0; j < routePaths[i].length; j++) {
             var longitude = routePaths[i][j][0]
             var lattitude = routePaths[i][j][1]
-            await setRoutePoints(longitude, lattitude, routeId)
+            //await setRoutePoints(longitude, lattitude, routeId)
         }
     }
 }
