@@ -341,7 +341,7 @@ async function GetAddedStudentInfo() {
     }
 
     for (let infoKey in routeInfo) {
-        ArcGisAPIController(simpleRoute, [routeInfo[infoKey], stopInfo[infoKey]])
+        ArcGisAPIController(simpleRoute, [routeInfo[infoKey], stopInfo[infoKey], infoKey])
     }
     
 }
@@ -380,7 +380,7 @@ async function complexRouteAsync(token, info) {
 }
 
 // call using - ArcGisAPIController(simpleRoute, [stops])
-function simpleRoute(token, stops, stopInfo) {
+function simpleRoute(token, stops, stopInfo, routeId) {
     var options = {
         url: 'https://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World/solve',
         method: 'POST',
@@ -400,8 +400,12 @@ function simpleRoute(token, stops, stopInfo) {
 
     $.post(options)
         .done(function (response) {
-            console.log(response);
-
+            console.log(response.routes.features[0].geometry.paths)
+            console.log(stopInfo)
+            for (i = 0; i < stopInfo.length; i++) {
+                SetStopInfo(stopInfo[i], i+1, routeId)
+            }
+            console.log(routeId)
         })
         .fail(function (xhr, status, error) {
             console.log("Error in simpleRoute: " + error);
@@ -411,11 +415,27 @@ function simpleRoute(token, stops, stopInfo) {
 function setRoutePoints() {
     $.ajax({
         url: "/Home/SetRouteInfo",
-        data: {},
+        data: { "longitude": longitude, "lattitude": lattitude, "routeId": routeId},
         type: 'GET',
         contentType: 'application/json; charset=utf-8',
         success: function (data, status, xhr) {
-            resolve(data);
+            
+        },
+        error: function (xhr, status, error) {
+            var err = eval("(" + xhr.responseText + ")");
+            alert(err.Message);
+        }
+    })
+}
+
+function SetStopInfo(stopId, stopNumber, routeId) {
+    $.ajax({
+        url: "/Home/SetStopInfo",
+        data: { "stopId": stopId, "stopNumber": stopNumber, "routeId": routeId},
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        success: function (data, status, xhr) {
+            
         },
         error: function (xhr, status, error) {
             var err = eval("(" + xhr.responseText + ")");
