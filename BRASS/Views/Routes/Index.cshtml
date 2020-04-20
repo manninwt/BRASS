@@ -5,6 +5,8 @@
     ViewData["Title"] = "Index";
 }
 
+<script src="~/js/AccessTokenControl.js"></script>
+<script src="~/js/multi_vehicle_routes.js"></script>
 <h2>Routes</h2>
 
 <div class="row col-lg-12" style="margin-top:1%">
@@ -74,7 +76,7 @@
                     <p>@Html.DisplayFor(model => model.unAssignedStudents)</p>
                     <h4>UNASSIGNED DRIVERS:</h4>
                     <p>@Html.DisplayFor(model => model.unAssignedBuses)</p>
-                    <button type="button" class="btn btn-outline-dark">Calculate Route(s)</button>
+                    <button type="button" class="btn btn-outline-dark" onclick="GetAddedStudentInfo()">Calculate Route(s)</button>
                 </div>
 
             </div>
@@ -124,7 +126,7 @@
 
                 var tbody_content = '';
 
-                for(let i = 0; i < data.length; i++) {
+                for (let i = 0; i < data.length; i++) {
                     tbody_content += '<tr></tr>';
                     tbody_content += '<td>' + data[i].firstName + " " + data[i].lastName + '</td>';
                     tbody_content += '<td>' + data[i].streetAddress + '</td>';
