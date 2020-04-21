@@ -7,7 +7,7 @@ Repository
 https://github.com/manninwt/BRASS
 
 Poster  
-https://github.com/manninwt/BRASS/blob/Assignment/BRASS/Assignments/Presentation/FinalizedPoster.pdf
+https://github.com/manninwt/BRASS/blob/Assignment/BRASS/Assignments/Presentation/FinalDesignPoster.pdf
 
 Wiki  
 https://github.com/manninwt/BRASS/wiki
