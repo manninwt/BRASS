@@ -244,8 +244,6 @@ async function GetMultiRouteInfo() {
 }
 
 async function GetAddedStudentInfo() {
-    await removeRoutePointsForRoute(1)
-
     var stops = await GetAllStopValues();
     var routePoints = await GetRoutePointsValues();
     var school = await GetSchoolValues();
@@ -271,8 +269,7 @@ async function GetAddedStudentInfo() {
         }
     }
 
-    if (addedStops.length) {
-        console.log("hi")
+    if (addedStops.length == 0) {
         return;
     }
 
@@ -417,63 +414,69 @@ function simpleRoute(token, stops, stopInfo, routeId) {
 async function setAddedRouteValues(routePaths, stopInfo, routeId) {
     await removeRoutePointsForRoute(routeId)
     for (i = 0; i < stopInfo.length; i++) {
-        SetStopInfo(stopInfo[i], i + 1, routeId)
+        await SetStopInfo(stopInfo[i], i + 1, routeId)
     }
     for (i = 0; i < routePaths.length; i++) {
         for (j = 0; j < routePaths[i].length; j++) {
             var longitude = routePaths[i][j][0]
             var lattitude = routePaths[i][j][1]
-            //await setRoutePoints(longitude, lattitude, routeId)
+            await setRoutePoints(longitude, lattitude, routeId)
         }
     }
 }
 
 function removeRoutePointsForRoute(routeId) {
+    return new Promise(function (resolve, reject) {
     $.ajax({
         url: "/Home/RemoveRoutePointsForRoute",
         data: { "routeId": routeId },
         type: 'GET',
         contentType: 'application/json; charset=utf-8',
         success: function (data, status, xhr) {
-
+            resolve()
         },
         error: function (xhr, status, error) {
             var err = eval("(" + xhr.responseText + ")");
             alert(err.Message);
         }
     })
+    });
 }
 
 function setRoutePoints(longitude, lattitude, routeId) {
+    return new Promise(function (resolve, reject) {
     $.ajax({
         url: "/Home/SetRouteInfo",
         data: { "longitude": longitude, "lattitude": lattitude, "routeId": routeId},
         type: 'GET',
         contentType: 'application/json; charset=utf-8',
         success: function (data, status, xhr) {
-            
+            resolve()
         },
         error: function (xhr, status, error) {
             var err = eval("(" + xhr.responseText + ")");
             alert(err.Message);
         }
     })
+    });
 }
 
 function SetStopInfo(stopId, stopNumber, routeId) {
+    return new Promise(function (resolve, reject) {
     $.ajax({
         url: "/Home/SetStopInfo",
         data: { "stopId": stopId, "stopNumber": stopNumber, "routeId": routeId},
         type: 'GET',
         contentType: 'application/json; charset=utf-8',
         success: function (data, status, xhr) {
-            
+            resolve()
         },
         error: function (xhr, status, error) {
             var err = eval("(" + xhr.responseText + ")");
             alert(err.Message);
         }
     })
+    });
 }
 
 
