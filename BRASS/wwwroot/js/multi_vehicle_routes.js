@@ -307,6 +307,7 @@ async function GetAddedStudentInfo() {
             routeInfo[routeId] = info
             stopInfo[routeId] = []
             //routeInfo[routeId].features.push(routeFeature(driver.driverId, driver.longitude, driver.lattitude));
+            routeInfo[routeId].features.push(routeFeature(1, -84.519020000000000, 39.143610000000000));
         }
         
 
