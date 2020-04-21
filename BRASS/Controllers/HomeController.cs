@@ -245,11 +245,17 @@ namespace BRASS.Controllers
             }
         }
 
-        public void SetRouteInfo(int longitude, int lattitude, int routeId)
+        public void SetRouteInfo(decimal longitude, decimal lattitude, int routeId)
         {
             using (var context = _context)
             {
-                var bus = context.RoutePoints.AsNoTracking().ToList();
+                RoutePoints newPoint = new RoutePoints();
+                newPoint.RouteId = routeId;
+                newPoint.Longitude = longitude;
+                newPoint.Lattitude = lattitude;
+
+                context.Add(newPoint);
+                context.SaveChanges();
 
                 return;
             }
@@ -261,6 +267,16 @@ namespace BRASS.Controllers
             {
                 var stop = context.RouteStops.AsNoTracking()
                     .Where(x => x.StopId == stopId).FirstOrDefault();
+
+                RouteStops updateStop = new RouteStops();
+                updateStop.StopId = stop.StopId;
+                updateStop.StopNumber = stopNumber;
+                updateStop.Longitude = stop.Longitude;
+                updateStop.Lattitude = stop.Lattitude;
+                updateStop.RouteId = routeId;
+
+                context.Update(updateStop);
+                context.SaveChanges();
 
 
 

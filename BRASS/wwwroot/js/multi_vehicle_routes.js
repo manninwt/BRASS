@@ -400,19 +400,45 @@ function simpleRoute(token, stops, stopInfo, routeId) {
 
     $.post(options)
         .done(function (response) {
-            console.log(response.routes.features[0].geometry.paths)
-            console.log(stopInfo)
-            for (i = 0; i < stopInfo.length; i++) {
-                SetStopInfo(stopInfo[i], i+1, routeId)
-            }
-            console.log(routeId)
+            var routePaths = response.routes.features[0].geometry.paths
+            setAddedRouteValues(routePaths, stopInfo, routeId)
         })
         .fail(function (xhr, status, error) {
             console.log("Error in simpleRoute: " + error);
         });
 }
 
-function setRoutePoints() {
+async function setAddedRouteValues(routePaths, stopInfo, routeId) {
+    //await removeRoutePointsForRoute(routeId)
+    for (i = 0; i < stopInfo.length; i++) {
+        SetStopInfo(stopInfo[i], i + 1, routeId)
+    }
+    for (i = 0; i < routePaths.length; i++) {
+        for (j = 0; j < routePaths[i].length; j++) {
+            var longitude = routePaths[i][j][0]
+            var lattitude = routePaths[i][j][1]
+            //await setRoutePoints(longitude, lattitude, routeId)
+        }
+    }
+}
+
+function removeRoutePointsForRoute(routeId) {
+    $.ajax({
+        url: "/Home/removeRoutePointsForRoute",
+        data: { "routeId": routeId },
+        type: 'GET',
+        contentType: 'application/json; charset=utf-8',
+        success: function (data, status, xhr) {
+
+        },
+        error: function (xhr, status, error) {
+            var err = eval("(" + xhr.responseText + ")");
+            alert(err.Message);
+        }
+    })
+}
+
+function setRoutePoints(longitude, lattitude, routeId) {
     $.ajax({
         url: "/Home/SetRouteInfo",
         data: { "longitude": longitude, "lattitude": lattitude, "routeId": routeId},
@@ -432,7 +458,7 @@ function SetStopInfo(stopId, stopNumber, routeId) {
     $.ajax({
         url: "/Home/SetStopInfo",
         data: { "stopId": stopId, "stopNumber": stopNumber, "routeId": routeId},
-        type: 'POST',
+        type: 'GET',
         contentType: 'application/json; charset=utf-8',
         success: function (data, status, xhr) {
             
