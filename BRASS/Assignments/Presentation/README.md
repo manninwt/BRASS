@@ -1,5 +1,8 @@
 Links: 
 
+Powerpoint Presentation:
+https://github.com/manninwt/BRASS/blob/Assignment/BRASS/Assignments/Presentation/BRASS%20Final.pdf
+
 Video Presentation  
 https://youtu.be/ZLUJ18mJJ20
 
