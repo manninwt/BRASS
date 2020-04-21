@@ -186,7 +186,7 @@
             var graphic = new Graphic({
                 symbol: {
                     type: "simple-marker",
-                    color: (type === "start") ? "grey" : (type === "middle") ? "white" : "black",
+                    color: "white",
                     size: "8px"
                 },
                 geometry: point
@@ -217,9 +217,11 @@
                 type: 'GET',
                 contentType: 'application/json; charset=utf-8',
                 success: function (data, status, xhr) {
+                    routeStopsArray.push([-84.519020000000000, 39.143610000000000]);
                     for (let i = 0; i < data.length; i++) {
                         routeStopsArray.push([data[i].longitude, data[i].lattitude]);
                     }
+                    routeStopsArray.push([-84.517653100000000, 39.135567400000000]);
                     callback(routeStopsArray)
                 },
                 error: function (xhr, status, error) {
@@ -239,9 +241,11 @@
                 type: 'GET',
                 contentType: 'application/json; charset=utf-8',
                 success: function (data, status, xhr) {
+                    routePointsArray.push([-84.519020000000000, 39.143610000000000]);
                     for (let i = 0; i < data.length; i++) {
                         routePointsArray.push([data[i].longitude, data[i].lattitude]);
                     }
+                    routePointsArray.push([-84.517653100000000, 39.135567400000000]);
                     callback(routePointsArray)
                 },
                 error: function (xhr, status, error) {
