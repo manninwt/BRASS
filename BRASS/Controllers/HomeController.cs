@@ -230,11 +230,16 @@ namespace BRASS.Controllers
             }
         }
 
-        public void removeRoutePointsForRoute(int routeId)
+        public void RemoveRoutePointsForRoute(int routeId)
         {
             using (var context = _context)
             {
-                var bus = context.RoutePoints.AsNoTracking().ToList();
+                var pointsList = context.RoutePoints.AsNoTracking()
+                    .Where(x => x.RouteId == routeId)
+                    .ToList();
+
+                context.RoutePoints.RemoveRange(pointsList);
+                context.SaveChanges();
 
                 return;
             }
