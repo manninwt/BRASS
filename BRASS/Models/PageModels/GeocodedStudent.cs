@@ -3,10 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace BRASS.Models
+namespace BRASS.Models.PageModels
 {
-    public class Students
+    public class GeocodedStudent
     {
         [Key]
         public int StudentId { get; set; }
@@ -22,5 +24,7 @@ namespace BRASS.Models
 
         [NotMapped]
         public SelectList RouteList { get; set; }
+        public decimal Lattitude { get; set; }
+        public decimal Longitude { get; set; }
     }
 }

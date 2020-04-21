@@ -1,4 +1,5 @@
 ﻿using BRASS.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,82 +13,134 @@ namespace BRASS.DataAccessLayer
         {
             context.Database.EnsureCreated();
 
-            // Look for any students.
-            if (context.Students.Any())
+            using (var dbContextTransaction = context.Database.BeginTransaction())
             {
-                return;   // DB has been seeded
-            }
+                try
+                {
+                    if (!context.RouteStops.Any())
+                    {
+                        var routeStops = new RouteStops[]
+                        {
+                    new RouteStops{},
+                    new RouteStops{},
+                    new RouteStops{},
+                    new RouteStops{},
+                        };
 
-            var students = new Students[]
-            {
-            new Students{FirstName="Timon",LastName="Mannings",ParentFirstName="Wade",ParentLastName="Mannings",ParentPhoneNumber="9374417246",
-                StreetAddress ="9353 County Road 101",City="Belle Center",ZipCode="43310"},
-            new Students{FirstName="Bryan",LastName="Huddleston",ParentFirstName="Bryan",ParentLastName="Huddleston",ParentPhoneNumber="5561234532",
-                StreetAddress ="2307 Liberty Street",City="West Chester",ZipCode="45530"},
-            new Students{FirstName="Braden",LastName="Lance",ParentFirstName="Scott",ParentLastName="Lance",ParentPhoneNumber="5567898965",
-                StreetAddress ="2311 Forest Hill Drive",City="West Chester",ZipCode="45211"},
-            new Students{FirstName="Nathan",LastName="Boehringer",ParentFirstName="Jim",ParentLastName="Boehringer",ParentPhoneNumber="5563214756",
-                StreetAddress ="5834 Vine Street",City="Clifton",ZipCode="45532"},
-            };
-            foreach (Students s in students)
-            {
-                context.Students.Add(s);
-            }
-            context.SaveChanges();
+                        foreach (RouteStops rs in routeStops)
+                        {
+                            context.RouteStops.Add(rs);
+                        }
 
-            var schools = new School[]
-            {
-            new School{SchoolName="Benjamin Logan Highschool",SchoolAddress="2424 County Road 47",City="Bellefontaine",ZipCode="43311",
-                NumbBuses=59,ArrivalTime=new DateTime(2020,5,20,7,45,0),DepartureTime=new DateTime(2020,5,20,15,15,0),RouteGroup ='A',}
-            };
-            foreach (School s in schools)
-            {
-                context.School.Add(s);
-            }
-            context.SaveChanges();
+                        context.SaveChanges();
+                    }
 
-            var buses = new Buses[]
-            {
-            new Buses{BusNumb=1,Capacity=30,Condition="FUNCTIONAL",Handicap="YES"},
-            new Buses{BusNumb=2,Capacity=30,Condition="FUNCTIONAL",Handicap="NO"},
-            new Buses{BusNumb=3,Capacity=30,Condition="NOT FUNCTIONAL",Handicap="NO"},
-            new Buses{BusNumb=4,Capacity=30,Condition="FUNCTIONAL",Handicap="NO"},
-            new Buses{BusNumb=5,Capacity=30,Condition="NOT FUNCTIONAL",Handicap="NO"},
-            new Buses{BusNumb=6,Capacity=30,Condition="FUNCTIONAL",Handicap="NO"},
-            };
-            foreach (Buses b in buses)
-            {
-                context.Buses.Add(b);
-            }
-            context.SaveChanges();
+                    if (!context.Students.Any())
+                    {
+                        var students = new Students[]
+                        {
+                    new Students{FirstName="Timon",LastName="Mannings",ParentFirstName="Wade",ParentLastName="Mannings",
+                        ParentPhoneNumber ="9374417246",StreetAddress ="9353 County Road 101",City="Belle Center",ZipCode="43310",StopId=3},
+                    new Students{FirstName="Bryan",LastName="Huddleston",ParentFirstName="Bryan",ParentLastName="Huddleston",
+                        ParentPhoneNumber ="5561234532",StreetAddress ="2307 Liberty Street",City="West Chester",ZipCode="45530",StopId=4},
+                    new Students{FirstName="Braden",LastName="Lance",ParentFirstName="Scott",ParentLastName="Lance",
+                        ParentPhoneNumber ="5567898965",StreetAddress ="2311 Forest Hill Drive",City="West Chester",ZipCode="45211",StopId=5},
+                    new Students{FirstName="Nathan",LastName="Boehringer",ParentFirstName="Jim",ParentLastName="Boehringer",
+                        ParentPhoneNumber ="5563214756",StreetAddress ="5834 Vine Street",City="Clifton",ZipCode="45532",StopId=6},
+                        };
 
-            var drivers = new Drivers[]
-            {
-            new Drivers{FirstName="Timon",LastName="Mannings",Condition="INACTIVE",StartAddress="9353 County Road 101",StartCity="Belle Center",
-                StartZipCode ="43310"},
-            new Drivers{FirstName="Nathan",LastName="Boehringer",Condition="ACTIVE",StartAddress="9353 County Road 101",StartCity="Belle Center",
-                StartZipCode ="43310"},
-            new Drivers{FirstName="Bryan",LastName="Huddleston",Condition="ACTIVE",StartAddress="9353 County Road 101",StartCity="Belle Center",
-                StartZipCode ="43310"}
-            };
-            foreach (Drivers d in drivers)
-            {
-                context.Drivers.Add(d);
-            }
-            context.SaveChanges();
+                        foreach (Students s in students)
+                        {
+                            context.Students.Add(s);
+                        }
 
-            var routes = new Routes[]
-            {
-            new Routes{RouteGroup='A'},
-            new Routes{RouteGroup='A'},
-            new Routes{RouteGroup='A'},
+                        context.SaveChanges();
+                    }
 
-            };
-            foreach (Routes r in routes)
-            {
-                context.Routes.Add(r);
+                    if (!context.School.Any())
+                    {
+                        var schools = new School[]
+                        {
+                    new School{SchoolName="Benjamin Logan Highschool",SchoolAddress="2424 County Road 47",SchoolCity="Bellefontaine",SchoolZipCode="43311",
+                        NumbBuses=59,ArrivalTime=new TimeSpan(7,45,0),DepartureTime=new TimeSpan(15,15,0),RouteGroup ='A',}
+                        };
+
+                        foreach (School s in schools)
+                        {
+                            context.School.Add(s);
+                        }
+
+                        context.SaveChanges();
+                    }
+
+                    if (!context.Buses.Any())
+                    {
+                        var buses = new Buses[]
+                        {
+                    new Buses{BusNumb=1,Capacity=30,Condition="FUNCTIONAL",Handicap="YES"},
+                    new Buses{BusNumb=2,Capacity=30,Condition="FUNCTIONAL",Handicap="NO"},
+                    new Buses{BusNumb=3,Capacity=30,Condition="NOT FUNCTIONAL",Handicap="NO"},
+                    new Buses{BusNumb=4,Capacity=30,Condition="FUNCTIONAL",Handicap="NO"},
+                    new Buses{BusNumb=5,Capacity=30,Condition="NOT FUNCTIONAL",Handicap="NO"},
+                    new Buses{BusNumb=6,Capacity=30,Condition="FUNCTIONAL",Handicap="NO"},
+                        };
+
+                        foreach (Buses b in buses)
+                        {
+                            context.Buses.Add(b);
+                        }
+
+                        context.SaveChanges();
+                    }
+
+                    if (!context.Drivers.Any())
+                    {
+                        var drivers = new Drivers[]
+                        {
+                    new Drivers{FirstName="Timon",LastName="Mannings",DriverPhoneNumber="9374417525",Condition="INACTIVE",StartAddress="9353 County Road 101",StartCity="Belle Center",
+                        StartZipCode ="43310"},
+                    new Drivers{FirstName="Nathan",LastName="Boehringer",DriverPhoneNumber="5562548734",Condition="ACTIVE",StartAddress="9353 County Road 101",StartCity="Belle Center",
+                        StartZipCode ="43310"},
+                    new Drivers{FirstName="Bryan",LastName="Huddleston",DriverPhoneNumber="5562538313",Condition="ACTIVE",StartAddress="9353 County Road 101",StartCity="Belle Center",
+                        StartZipCode ="43310"}
+                        };
+
+                        foreach (Drivers d in drivers)
+                        {
+                            context.Drivers.Add(d);
+                        }
+
+                        context.SaveChanges();
+                    }
+
+                    if (!context.Routes.Any())
+                    {
+                        var routes = new Routes[]
+                        {
+                    new Routes{RouteGroup='A'},
+                    new Routes{RouteGroup='A'},
+                    new Routes{RouteGroup='A'},
+                        };
+
+                        foreach (Routes r in routes)
+                        {
+                            context.Routes.Add(r);
+                        }
+
+                        context.SaveChanges();
+                    }
+
+                    dbContextTransaction.Commit();
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.InnerException);
+                    return;
+                    //Log, handle or absorbe I don't care ^_^
+                }
             }
-            context.SaveChanges();
         }
     }
 }
