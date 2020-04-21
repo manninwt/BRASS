@@ -80,23 +80,37 @@ namespace BRASS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudentId,FirstName,LastName,ParentFirstName,ParentLastName,ParentPhoneNumber,StreetAddress,City,ZipCode,StopId")] Students students)
+        public async Task<IActionResult> Create([Bind("StudentId,FirstName,LastName,ParentFirstName,ParentLastName,ParentPhoneNumber,StreetAddress,City,ZipCode,StopId,Longitude,Lattitude")] GeocodedStudent students)
         {
+            Students student = new Students();
             if (ModelState.IsValid)
             {
+                student.FirstName = students.FirstName;
+                student.LastName = students.LastName;
+                student.ParentFirstName = students.ParentFirstName;
+                student.ParentLastName = students.ParentLastName;
+                student.ParentPhoneNumber = students.ParentPhoneNumber;
+                student.StreetAddress = students.StreetAddress;
+                student.City = students.City;
+                student.ZipCode = students.ZipCode;
+
                 int studentStopId = 0;
                 int studentId = 0;
                 using (var context = _context)
                 {
                     RouteStops studentStop = new RouteStops();
+                    studentStop.Lattitude = students.Lattitude;
+                    studentStop.Longitude = students.Longitude;
+
                     context.Add(studentStop);
-                    context.Add(students);
+                    context.Add(student);
                     context.SaveChanges();
+
                     studentStopId = studentStop.StopId;
                     studentId = students.StudentId;
 
-                    students.StopId = studentStopId;
-                    context.Update(students);
+                    student.StopId = studentStopId;
+                    context.Update(student);
                     context.SaveChanges();
                     await context.SaveChangesAsync();
                     
@@ -106,7 +120,7 @@ namespace BRASS.Controllers
 
                 //Need to figure out a way to assign the studentStopId to the newly created routeStops object
             }
-            return View(students);
+            return View(student);
         }
 
         public async Task<IActionResult> CreateStop()

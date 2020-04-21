@@ -1,8 +1,10 @@
-﻿@model BRASS.Models.Students
+﻿@model BRASS.Models.PageModels.GeocodedStudent
 
 @{
     ViewData["Title"] = "Create";
 }
+
+<script src="~/js/AccessTokenControl.js"></script>
 
 <h2>Add New Student</h2>
 <hr />
@@ -51,7 +53,17 @@
                 <span asp-validation-for="ZipCode" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input value="Convert Data" onclick="AddressToGeo(this.streetAddress, this.city, this.zipCode)"cclass="btn btn-default" />
+                <label asp-for="Lattitude" class="control-label"></label>
+                <input asp-for="Lattitude" class="form-control" id="lattitude" />
+                <span asp-validation-for="Lattitude" class="text-danger" id="loongitude"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Longitude" class="control-label"></label>
+                <input asp-for="Longitude" class="form-control" id="longitude" />
+                <span asp-validation-for="Longitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input value="Convert Data" onclick="ArcGisAPIController(AddressToGeo)" class="btn btn-default" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
@@ -69,7 +81,11 @@
 }
 
 <script>
-    function AddressToGeo(token, streetAddress, city, zipCode) {
+    function AddressToGeo(token) {
+        var streetAddress = document.getElementById("StreetAddress").value;
+        var city = document.getElementById("City").value;
+        var zipCode = document.getElementById("ZipCode").value;
+        
         var address = streetAddress + " " + city + " " + zipCode;
 
         var options = {
@@ -88,8 +104,10 @@
         $.ajax(options)
             .done(function (response) {
                 // location is define as {x,y}
-                location = response.location;
-                console.log(response);
+                document.getElementById("lattitude").value = response.candidates[0].location.y;
+                document.getElementById("longitude").value = response.candidates[0].location.x;
+                //location = response.location;
+                //console.log(response);
                 // ToDo: needs call to database to set stop
             })
             .fail(function (xhr, status, error) {
