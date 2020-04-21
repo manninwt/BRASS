@@ -238,7 +238,10 @@ namespace BRASS.Controllers
                     .Where(x => x.RouteId == routeId)
                     .ToList();
 
-                context.RoutePoints.RemoveRange(pointsList);
+                foreach(RoutePoints point in pointsList)
+                {
+                    context.RoutePoints.Remove(point);
+                }
                 context.SaveChanges();
 
                 return;
