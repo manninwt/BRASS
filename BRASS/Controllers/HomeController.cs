@@ -234,11 +234,18 @@ namespace BRASS.Controllers
         {
             using (var context = _context)
             {
-                var pointsList = context.RoutePoints.AsNoTracking()
+                var pointsList = context.RoutePoints
                     .Where(x => x.RouteId == routeId)
                     .ToList();
 
-                context.RoutePoints.RemoveRange(pointsList);
+                int listSize = pointsList.Count;
+
+                foreach (var point in pointsList)
+                {
+                    context.Remove(point);
+                }
+
+                //context.RoutePoints.RemoveRange(pointsList);
                 context.SaveChanges();
 
                 return;

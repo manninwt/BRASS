@@ -222,7 +222,7 @@ async function GetMultiRouteInfo() {
             
             info.route_info.features.push({
                 "attributes": {
-                    "Name": "Route " + i,
+                    "Name": i.toString(10),
                     "Description": "vehicle " + i,
                     "StartDepotName": driver_depot_name,
                     "EndDepotName": schoold_depot_name,
@@ -244,6 +244,8 @@ async function GetMultiRouteInfo() {
 }
 
 async function GetAddedStudentInfo() {
+    await removeRoutePointsForRoute(1)
+
     var stops = await GetAllStopValues();
     var routePoints = await GetRoutePointsValues();
     var school = await GetSchoolValues();
@@ -269,6 +271,11 @@ async function GetAddedStudentInfo() {
         }
     }
 
+    if (addedStops.length) {
+        console.log("hi")
+        return;
+    }
+
     // Figures out which route each new stop will be added to
     for (i = 0; i < routePoints.length; i++) {
         for (j = 0; j < addedStops.length; j++) {
@@ -282,7 +289,6 @@ async function GetAddedStudentInfo() {
             }
         }
     }
-
 
     var info = {
         "type": "features",
@@ -409,7 +415,7 @@ function simpleRoute(token, stops, stopInfo, routeId) {
 }
 
 async function setAddedRouteValues(routePaths, stopInfo, routeId) {
-    //await removeRoutePointsForRoute(routeId)
+    await removeRoutePointsForRoute(routeId)
     for (i = 0; i < stopInfo.length; i++) {
         SetStopInfo(stopInfo[i], i + 1, routeId)
     }
@@ -424,7 +430,7 @@ async function setAddedRouteValues(routePaths, stopInfo, routeId) {
 
 function removeRoutePointsForRoute(routeId) {
     $.ajax({
-        url: "/Home/removeRoutePointsForRoute",
+        url: "/Home/RemoveRoutePointsForRoute",
         data: { "routeId": routeId },
         type: 'GET',
         contentType: 'application/json; charset=utf-8',
