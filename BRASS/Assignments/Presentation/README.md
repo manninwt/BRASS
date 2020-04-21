@@ -4,8 +4,8 @@ Powerpoint Presentation:
 https://github.com/manninwt/BRASS/blob/Assignment/BRASS/Assignments/Presentation/BRASS%20Final.pdf
 
 Video Presentation  
-Demo: https://youtu.be/ZLUJ18mJJ20  
-Presentation: https://youtu.be/0x81zNL64Zk
+Application Demo Video: https://youtu.be/ZLUJ18mJJ20  
+PowerPoint Presentation Video: https://youtu.be/0x81zNL64Zk
 
 Repository  
 https://github.com/manninwt/BRASS
